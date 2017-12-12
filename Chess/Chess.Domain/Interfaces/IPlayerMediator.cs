@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Chess.Domain.Pieces
+namespace Chess.Domain
 {
-	public class PawnAdapter
+	public interface IPlayerMediator
 	{
+		void GiveNextTurn(Player NextPlayer);
 	}
 }

@@ -27,49 +27,49 @@ namespace Chess.Domain
         [Test]
         public void _005_the_playing_board_should_know_that_X_equals_0_and_Y_equals_0_is_a_valid_board_position()
         {
-            var isValidPosition = ChessBoardManager.IsLegalBoardPosition(0, 0);
+            var isValidPosition = ChessBoard.IsLegalBoardPosition(0, 0);
             Assert.That(isValidPosition, Is.True);
         }
 
         [Test]
         public void _006_the_playing_board_should_know_that_X_equals_5_and_Y_equals_5_is_a_valid_board_position()
         {
-            var isValidPosition = ChessBoardManager.IsLegalBoardPosition(5, 5);
+            var isValidPosition = ChessBoard.IsLegalBoardPosition(5, 5);
             Assert.That(isValidPosition, Is.True);
         }
 
         [Test]
         public void _010_the_playing_board_should_know_that_X_equals_11_and_Y_equals_5_is_an_invalid_board_position()
         {
-            var isValidPosition = ChessBoardManager.IsLegalBoardPosition(11, 5);
+            var isValidPosition = ChessBoard.IsLegalBoardPosition(11, 5);
             Assert.That(isValidPosition, Is.False);
         }
 
         [Test]
         public void _011_the_playing_board_should_know_that_X_equals_0_and_Y_equals_8_is_an_invalid_board_position()
         {
-            var isValidPosition = ChessBoardManager.IsLegalBoardPosition(0, 9);
+            var isValidPosition = ChessBoard.IsLegalBoardPosition(0, 9);
             Assert.That(isValidPosition, Is.False);
         }
 
         [Test]
         public void _011_the_playing_board_should_know_that_X_equals_11_and_Y_equals_0_is_an_invalid_board_position()
         {
-            var isValidPosition = ChessBoardManager.IsLegalBoardPosition(11, 0);
+            var isValidPosition = ChessBoard.IsLegalBoardPosition(11, 0);
             Assert.That(isValidPosition, Is.False);
         }
 
         [Test]
         public void _012_the_playing_board_should_know_that_X_equals_minus_1_and_Y_equals_5_is_an_invalid_board_position()
         {
-            var isValidPosition = ChessBoardManager.IsLegalBoardPosition(-1, 5);
+            var isValidPosition = ChessBoard.IsLegalBoardPosition(-1, 5);
             Assert.That(isValidPosition, Is.False);
         }
 
         [Test]
         public void _012_the_playing_board_should_know_that_X_equals_5_and_Y_equals_minus_1_is_an_invalid_board_position()
         {
-            var isValidPosition = ChessBoardManager.IsLegalBoardPosition(5, -1);
+            var isValidPosition = ChessBoard.IsLegalBoardPosition(5, -1);
             Assert.That(isValidPosition, Is.False);
         }
     }
@@ -82,7 +82,7 @@ namespace Chess.Domain
         [SetUp]
         public void SetUp()
         {
-			ChessBoardManager.ResetBoard();
+			ChessBoard.ResetBoard();
 			_pawn = new Pawn(PieceColor.Black);
 			
 		}
@@ -90,7 +90,7 @@ namespace Chess.Domain
         [Test]
         public void _01_placing_the_black_pawn_on_Row_equals_1_and_Column_equals_3_should_place_the_black_pawn_on_that_place_on_the_board()
         {
-			ChessBoardManager.AddToBoard(_pawn, 1, 3);
+			ChessBoard.AddPiece(_pawn, 1, 3);
 			Assert.That(_pawn.Row, Is.EqualTo(1));
             Assert.That(_pawn.Column, Is.EqualTo(3));
         }
@@ -98,9 +98,9 @@ namespace Chess.Domain
         [Test]
         public void _10_making_an_illegal_move_by_placing_the_black_pawn_on_Row_equals_1_and_Column_eqauls_3_and_moving_to_Row_equals_2_and_Column_eqauls_3_should_not_move_the_pawn()
         {
-			ChessBoardManager.AddToBoard(_pawn, 1, 3);
+			ChessBoard.AddPiece(_pawn, 1, 3);
 			var blockingPawn = new Pawn(PieceColor.Black);
-			ChessBoardManager.AddToBoard(blockingPawn, 2, 3);
+			ChessBoard.AddPiece(blockingPawn, 2, 3);
 			_pawn.Move(2, 3);
             Assert.That(_pawn.Row, Is.EqualTo(1));
             Assert.That(_pawn.Column, Is.EqualTo(3));
@@ -109,7 +109,7 @@ namespace Chess.Domain
         [Test]
         public void _11_making_an_illegal_move_by_placing_the_black_pawn_on_X_equals_1_and_Y_eqauls_3_and_moving_to_X_equals_4_and_Y_eqauls_3_should_not_move_the_pawn()
         {
-			ChessBoardManager.AddToBoard(_pawn, 1, 3);
+			ChessBoard.AddPiece(_pawn, 1, 3);
 			_pawn.Move(2, 3);
 			_pawn.Move(4, 3);
 			Assert.That(_pawn.Row, Is.EqualTo(2));
@@ -120,7 +120,7 @@ namespace Chess.Domain
 		public void _12_making_a_legal_move_by_placing_the_black_pawn_on_X_equals_1_and_Y_eqauls_3_and_moving_to_X_equals_3_and_Y_eqauls_3_should_move_the_pawn()
 		{
 
-			ChessBoardManager.AddToBoard(_pawn, 1, 3);
+			ChessBoard.AddPiece(_pawn, 1, 3);
 			_pawn.Move(3, 3);
 			Assert.That(_pawn.Row, Is.EqualTo(3));
 			Assert.That(_pawn.Column, Is.EqualTo(3));
@@ -130,7 +130,7 @@ namespace Chess.Domain
         public void _20_making_a_legal_move_by_placing_the_black_pawn_on_X_equals_1_and_Y_eqauls_3_and_moving_to_X_equals_2_and_Y_eqauls_3_should_move_the_pawn()
         {
 			
-			ChessBoardManager.AddToBoard(_pawn, 1, 3);
+			ChessBoard.AddPiece(_pawn, 1, 3);
             _pawn.Move(2, 3);
             Assert.That(_pawn.Row, Is.EqualTo(2));
             Assert.That(_pawn.Column, Is.EqualTo(3));
@@ -146,7 +146,7 @@ namespace Chess.Domain
         [SetUp]
         public void SetUp()
         {
-			ChessBoardManager.ResetBoard();
+			ChessBoard.ResetBoard();
 			_pawn = new Pawn(PieceColor.White);
 			
 		}
@@ -155,7 +155,7 @@ namespace Chess.Domain
         public void _01_placing_the_white_pawn_on_X_equals_6_and_Y_equals_1_should_place_the_white_pawn_on_that_place_on_the_board()
         {
 			
-			ChessBoardManager.AddToBoard(_pawn, 6, 1);
+			ChessBoard.AddPiece(_pawn, 6, 1);
 			Assert.That(_pawn.Row, Is.EqualTo(6));
             Assert.That(_pawn.Column, Is.EqualTo(1));
         }
@@ -163,7 +163,7 @@ namespace Chess.Domain
         [Test]
         public void _10_making_an_illegal_move_by_placing_the_white_pawn_on_X_equals_6_and_Y_eqauls_1_and_moving_to_X_equals_7_and_Y_eqauls_2_should_not_move_the_pawn()
         {
-			ChessBoardManager.AddToBoard(_pawn, 6, 1);
+			ChessBoard.AddPiece(_pawn, 6, 1);
 			_pawn.Move(7, 2);
             Assert.That(_pawn.Row, Is.EqualTo(6));
             Assert.That(_pawn.Column, Is.EqualTo(1));
@@ -172,7 +172,7 @@ namespace Chess.Domain
         [Test]
         public void _11_making_an_illegal_move_by_placing_the_white_pawn_on_X_equals_6_and_Y_eqauls_1_and_moving_to_X_equals_6_and_Y_eqauls_4_should_not_move_the_pawn()
         {
-			ChessBoardManager.AddToBoard(_pawn, 6, 1);
+			ChessBoard.AddPiece(_pawn, 6, 1);
 			_pawn.Move(6, 4);
             Assert.That(_pawn.Row, Is.EqualTo(6));
             Assert.That(_pawn.Column, Is.EqualTo(1));
@@ -181,7 +181,7 @@ namespace Chess.Domain
         [Test]
         public void _20_making_a_illegal_move_by_placing_the_white_pawn_on_X_equals_6_and_Y_eqauls_1_and_moving_to_X_equals_7_and_Y_eqauls_1_should_not_move_the_pawn()
         {
-			ChessBoardManager.AddToBoard(_pawn, 6, 1);
+			ChessBoard.AddPiece(_pawn, 6, 1);
 			_pawn.Move(7, 1);
             Assert.That(_pawn.Row, Is.EqualTo(6));
             Assert.That(_pawn.Column, Is.EqualTo(1));

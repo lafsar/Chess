@@ -44,11 +44,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChessConstants.cs" />
-    <Compile Include="Pieces\PawnAdapter.cs" />
+    <Compile Include="Player\FirstPlayer.cs" />
+    <Compile Include="Interfaces\IPawnAdapter.cs" />
+    <Compile Include="Player\Player.cs" />
+    <Compile Include="Player\ChessGame.cs" />
+    <Compile Include="Player\SecondPlayer.cs" />
+    <Compile Include="Strategies\BaseMoveStrategy.cs" />
+    <Compile Include="Strategies\PawnAdapterStrategy.cs" />
     <Compile Include="Strategies\ColumnMoveStrategy.cs" />
     <Compile Include="Strategies\DiagonalMoveStrategy.cs" />
-    <Compile Include="Interfaces\IMoveable.cs" />
-    <Compile Include="Interfaces\IPlayer.cs" />
+    <Compile Include="Interfaces\IMoveStrategy.cs" />
+    <Compile Include="Interfaces\IPlayerMediator.cs" />
     <Compile Include="Pieces\Pawn.cs" />
     <Compile Include="PieceColor.cs" />
     <Compile Include="ChessBoard.cs" />
@@ -58,6 +64,7 @@
     <Compile Include="Pieces\PawnSpecs.cs" />
     <Compile Include="Strategies\RowMoveStrategy.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

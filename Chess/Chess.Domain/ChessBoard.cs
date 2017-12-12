@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace Chess.Domain
 {
-    public static class ChessBoardManager
+    public static class ChessBoard
     {
         private static ChessPiece[,] _instance;
 
-		public static ChessPiece[,] Board
+		private static ChessPiece[,] Board
         {
             get
             {
@@ -20,7 +20,12 @@ namespace Chess.Domain
             }
         }
 
-		public static void AddToBoard<T>(ChessPiece<T> piece, int row, int column) where T : ChessPiece<T>
+		public static ChessPiece GetPiece(int row, int col)
+		{
+			return Board[row, col];
+		}
+
+		public static void AddPiece(ChessPiece piece, int row, int column)
 		{
 			if (IsLegalBoardPosition(row, column) && Board[row, column] == null)
 			{
@@ -33,7 +38,7 @@ namespace Chess.Domain
 			}
 		}
 
-		public static void RemoveFromBoard(int row, int column)
+		public static void RemovePiece(int row, int column)
 		{
 			if (IsLegalBoardPosition(row, column) && Board[row, column] != null)
 			{
