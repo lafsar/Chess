@@ -18,17 +18,17 @@ namespace Chess.Domain
 			CurrentColumn = col;
 			OpposingColor = opposingPlayer;
 
-			return new List<Tuple<int, int>>().AsEnumerable();
+			return new List<Tuple<int, int>>();
 		}
 
 		public bool IsLocationBlocked(int row, int col)
 		{
 			var boardItem = ChessBoard.GetPiece(row, col);
-			TryCapture(row, col, boardItem);
+			RaiseCapture(row, col, boardItem);
 			return boardItem != null && boardItem.PieceColor != OpposingColor;
 		}
 
-		private void TryCapture(int row, int col, ChessPiece boardItem)
+		private void RaiseCapture(int row, int col, ChessPiece boardItem)
 		{
 			CaptureableLocation = boardItem != null && boardItem.PieceColor == OpposingColor
 							? new Tuple<int, int>(row, col)

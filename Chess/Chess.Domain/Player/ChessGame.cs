@@ -16,17 +16,18 @@ namespace Chess.Domain
 		}
 
 		public static int TurnCount { get; set; }
-		public static void StartGame(FirstPlayer player1, SecondPlayer player2)
+		public void StartGame(FirstPlayer player1, SecondPlayer player2)
 		{
 			ChessBoard.ResetBoard();
-
-			if (player1.PieceColor == player2.PieceColor)
+			Player1 = player1;
+			Player2 = player2;
+			if (Player1.PieceColor == Player2.PieceColor)
 			{
-				player1.PieceColor = player1.PieceColor == PieceColor.White
+				Player1.PieceColor = Player1.PieceColor == PieceColor.White
 					? PieceColor.Black
 					: PieceColor.White;
-				player1.IsCurrentTurn = player1.PieceColor == PieceColor.White;
-				player2.IsCurrentTurn = player2.PieceColor == PieceColor.White;
+				Player1.IsCurrentTurn = Player1.PieceColor == PieceColor.White;
+				Player2.IsCurrentTurn = Player2.PieceColor == PieceColor.White;
 			}
 
 			//TODO: Populate board with all the pieces

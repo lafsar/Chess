@@ -10,7 +10,16 @@ namespace Chess.Domain.Pieces
 		public Knight(PieceColor color) : base(color) { }
 		public override IEnumerable<Tuple<int, int>> PossibleStartingPositions()
 		{
-			return new List<Tuple<int, int>>().AsEnumerable();
+			if (PieceColor == PieceColor.Black)
+			{
+				yield return new Tuple<int, int>(0, 1);
+				yield return new Tuple<int, int>(0, 6);
+			}
+			else
+			{
+				yield return new Tuple<int, int>(ChessConstants.MAX_BOARD_ROWS - 1, 1);
+				yield return new Tuple<int, int>(ChessConstants.MAX_BOARD_ROWS - 1, 6);
+			}
 		}
 	}
 }

@@ -48,8 +48,8 @@ namespace Chess.Domain
 			return canMove;
 		}
 
-		protected virtual void BeforeMove() { }
-		protected virtual void AfterMove() { }
+		protected virtual void BeforeMove() {}
+		protected virtual void AfterMove() {}
 
         public override string ToString()
         {

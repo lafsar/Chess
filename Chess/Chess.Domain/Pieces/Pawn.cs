@@ -38,8 +38,15 @@ namespace Chess.Domain
 		{
 			for (var c = 0; c < ChessConstants.MAX_BOARD_COLUMNS; c++)
 			{
-				yield return new Tuple<int, int>(1, c);
-				yield return new Tuple<int, int>(ChessConstants.MAX_BOARD_ROWS - 2, c);
+				if (PieceColor == PieceColor.Black)
+				{
+					yield return new Tuple<int, int>(1, c);
+				} else
+				{
+					yield return new Tuple<int, int>(ChessConstants.MAX_BOARD_ROWS - 2, c);
+				}
+				
+				
 			}
 		}
 
