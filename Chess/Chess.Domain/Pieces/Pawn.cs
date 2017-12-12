@@ -34,19 +34,17 @@ namespace Chess.Domain
 			MoveStrategy = new PawnAdapterStrategy(MoveCount, Direction);
 		}
 
-		public override IEnumerable<Tuple<int, int>> PossibleStartingPositions()
+		public static IEnumerable<Tuple<int, int>> PossibleStartingPositions(PieceColor color)
 		{
 			for (var c = 0; c < ChessConstants.MAX_BOARD_COLUMNS; c++)
 			{
-				if (PieceColor == PieceColor.Black)
+				if (color == PieceColor.Black)
 				{
 					yield return new Tuple<int, int>(1, c);
 				} else
 				{
 					yield return new Tuple<int, int>(ChessConstants.MAX_BOARD_ROWS - 2, c);
 				}
-				
-				
 			}
 		}
 

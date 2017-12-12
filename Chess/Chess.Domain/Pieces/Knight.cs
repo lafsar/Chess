@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Chess.Domain.Pieces
+namespace Chess.Domain
 {
 	public sealed class Knight : ChessPiece
 	{
 		public Knight(PieceColor color) : base(color) { }
-		public override IEnumerable<Tuple<int, int>> PossibleStartingPositions()
+		public static IEnumerable<Tuple<int, int>> PossibleStartingPositions(PieceColor color)
 		{
-			if (PieceColor == PieceColor.Black)
+			if (color == PieceColor.Black)
 			{
 				yield return new Tuple<int, int>(0, 1);
 				yield return new Tuple<int, int>(0, 6);

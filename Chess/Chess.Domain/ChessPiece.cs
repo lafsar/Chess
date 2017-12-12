@@ -63,25 +63,5 @@ namespace Chess.Domain
 				ChessBoard.RemovePiece(destination.Item1, destination.Item2);
 			}
 		}
-
-		/// <summary>
-		/// Absolute starting positions on a full board
-		/// </summary>
-		/// <returns>
-		/// Iterable collection of row, col
-		/// </returns>
-		public abstract IEnumerable<Tuple<int, int>> PossibleStartingPositions();
-
-		public void SetInitialPosition(int row, int col)
-		{
-			if (PossibleStartingPositions().Any(t => t.Item1 == row && t.Item2 == col))
-			{
-				SetPosition(row, col);
-			}
-			else
-			{
-				throw new Exception("Not a valid starting position for this piece!");
-			}
-		}
 	}
 }

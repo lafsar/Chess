@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Chess.Domain
 {
-	public static class ChessConstants
+	public class ChessConstants
 	{
 		public const int MAX_BOARD_ROWS = 8;
 		public const int MAX_BOARD_COLUMNS = 8;
