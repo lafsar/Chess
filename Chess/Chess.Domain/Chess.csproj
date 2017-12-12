@@ -44,6 +44,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChessConstants.cs" />
+    <Compile Include="Pieces\King.cs" />
+    <Compile Include="Pieces\Knight.cs" />
+    <Compile Include="Pieces\Queen.cs" />
+    <Compile Include="Pieces\Rook.cs" />
     <Compile Include="Player\FirstPlayer.cs" />
     <Compile Include="Interfaces\IPawnAdapter.cs" />
     <Compile Include="Player\Player.cs" />
