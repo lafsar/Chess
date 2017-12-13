@@ -9,11 +9,12 @@ namespace Chess.Domain
 	{
 		public FirstPlayer Player1 { get; set; }
 		public SecondPlayer Player2 { get; set; }
-		public static int TurnCount { get; set; }
+		public int TurnCount { get; set; }
 		public void GiveNextTurn(Player NextPlayer)
 		{
 			Player2.IsCurrentTurn = NextPlayer == Player1;
 			Player1.IsCurrentTurn = NextPlayer == Player2;
+			TurnCount++;
 		}
 
 		public void StartGame(FirstPlayer player1, SecondPlayer player2)

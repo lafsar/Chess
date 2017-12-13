@@ -62,23 +62,17 @@ namespace Chess.Domain
 
 		public IEnumerable<Tuple<int, int>> PawnCaptureMoves()
 		{
-			var isDiagRightCapturable = ChessBoard.IsLegalBoardPosition(DiagonalRight.Item1, DiagonalRight.Item2) 
-				&& ChessBoard.GetPiece(DiagonalRight.Item1, DiagonalRight.Item2) != null
+			var isDiagRightCapturable = ChessBoard.GetPiece(DiagonalRight.Item1, DiagonalRight.Item2) != null
 				&& ChessBoard.GetPiece(DiagonalRight.Item1, DiagonalRight.Item2).PieceColor == OpposingColor;
 
-			var isDiagLeftCapturable = ChessBoard.IsLegalBoardPosition(DiagonalLeft.Item1, DiagonalLeft.Item2) 
-				&& ChessBoard.GetPiece(DiagonalLeft.Item1, DiagonalLeft.Item2) != null
+			var isDiagLeftCapturable = ChessBoard.GetPiece(DiagonalLeft.Item1, DiagonalLeft.Item2) != null
 				&& ChessBoard.GetPiece(DiagonalLeft.Item1, DiagonalLeft.Item2).PieceColor == OpposingColor;
 
-			var leftAdjacent = ChessBoard.IsLegalBoardPosition(CurrentRow, CurrentColumn - 1) 
-				? ChessBoard.GetPiece(CurrentRow, CurrentColumn - 1)
-				: null;
+			var leftAdjacent = ChessBoard.GetPiece(CurrentRow, CurrentColumn - 1);
 
 			var isDiagLeftPassantable = DeterminePassantable(DiagonalLeft, leftAdjacent);
 
-			var rightAdjacent = ChessBoard.IsLegalBoardPosition(CurrentRow, CurrentColumn + 1) 
-				? ChessBoard.GetPiece(CurrentRow, CurrentColumn + 1)
-				: null;
+			var rightAdjacent = ChessBoard.GetPiece(CurrentRow, CurrentColumn + 1);
 
 			var isDiagRightPassantable = DeterminePassantable(DiagonalRight, rightAdjacent);
 

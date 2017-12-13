@@ -11,7 +11,7 @@ namespace Chess.Domain
     {
 		public IMoveStrategy MoveStrategy { get; set; }
         private PieceColor _pieceColor;
-
+		public int MoveCount { get; protected set; }
 		public PieceColor PieceColor
         {
             get { return _pieceColor; }
@@ -49,7 +49,9 @@ namespace Chess.Domain
 		}
 
 		protected virtual void BeforeMove() {}
-		protected virtual void AfterMove() {}
+		protected virtual void AfterMove() {
+			MoveCount++;
+		}
 
         public override string ToString()
         {

@@ -8,7 +8,6 @@ namespace Chess.Domain
 	public sealed class Pawn : ChessPiece
 	{
 		public bool HasMovedDouble { get; private set; }
-		public int MoveCount { get; private set; }
 		public int Direction
 		{
 			get

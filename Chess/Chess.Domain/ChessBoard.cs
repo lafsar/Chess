@@ -29,7 +29,7 @@ namespace Chess.Domain
 
 		public static void AddPiece(ChessPiece piece, int row, int column)
 		{
-			if (IsLegalBoardPosition(row, column) && Board[row, column] == null)
+			if (GetPiece(row, column) == null)
 			{
 				Board[row, column] = piece;
 				piece.SetPosition(row, column);
@@ -42,7 +42,7 @@ namespace Chess.Domain
 
 		public static void RemovePiece(int row, int column)
 		{
-			if (IsLegalBoardPosition(row, column) && Board[row, column] != null)
+			if (GetPiece(row, column) != null)
 			{
 				Board[row, column] = null;
 			}
@@ -60,35 +60,74 @@ namespace Chess.Domain
 			}
 		}
 
-		public static void PromotePawn(int row, int col, PieceColor color, string type)
+		public static bool PromotePawn(int row, int col, PieceColor color, string type)
 		{
 			var piece = ChessBoard.GetPiece(row, col);
 			var requiredRow = color == PieceColor.Black
-				? 0
-				: ChessConstants.MAX_BOARD_ROWS - 1;
+				? ChessConstants.MAX_BOARD_ROWS - 1
+				: 0;
 			ChessPiece newPiece;
-			if (piece != null && row == requiredRow && piece.PieceColor == color && piece.GetType().ToString() == "Pawn")
+			bool hasPromoted = false;
+			if (piece != null && row == requiredRow && piece.PieceColor == color && piece.GetType() == typeof(Pawn))
 			{
 				switch (type) {
 					case "Queen":
-						//newPiece = new Queen(PieceColor);
-
+						newPiece = new Queen(color);
+						hasPromoted = SwitchPiece(piece, newPiece);
+						break;
 					case "Bishop":
+						newPiece = new Bishop(color);
+						hasPromoted = SwitchPiece(piece, newPiece);
+						break;
 					case "Knight":
+						newPiece = new Knight(color);
+						hasPromoted = SwitchPiece(piece, newPiece);
+						break;
 					case "Rook":
-					case "Pawn":
+						newPiece = new Rook(color);
+						hasPromoted = SwitchPiece(piece, newPiece);
+						break;
+					default:
 						break;
 				}
 			}
+			return hasPromoted;
 		}
-
-		private static void SwitchPiece(ChessPiece oldPiece, ChessPiece newPiece)
+		/// <summary>
+		/// Castle the king for the current color
+		/// </summary>
+		/// <param name="color"></param>
+		/// <param name="direction">
+		/// 1 or -1  (-1 to the left, 1 to the right)
+		/// </param>
+		/// <returns>
+		/// </returns>
+		public static bool CastleKing(PieceColor color, int direction)
 		{
-			//ChessBoard.RemovePiece(oldPiece.Row, oldPiece.Column);
-			//ChessBoard.
+			var requiredKing = color == PieceColor.Black
+				? ChessBoard.GetPiece(0, 4)
+				: ChessBoard.GetPiece(ChessConstants.MAX_BOARD_ROWS - 1, 4);
+
+			var isKing = requiredKing != null && requiredKing.GetType() == typeof(King) && requiredKing.MoveCount == 0 && !(requiredKing as King).IsInCheck;
+			var directionColumn = direction == 1
+				? ChessConstants.MAX_BOARD_COLUMNS - 1
+				: 0;
+			var requiredRook = color == PieceColor.Black
+				? ChessBoard.GetPiece(0, directionColumn)
+				: ChessBoard.GetPiece(ChessConstants.MAX_BOARD_ROWS - 1, directionColumn);
+			var isRook = requiredRook != null && requiredRook.GetType() == typeof(Rook) && requiredRook.MoveCount == 0;
+			//var hasNoBlocks = dire
+			return false;
 		}
 
-		public static void SetupPawns()
+		private static bool SwitchPiece(ChessPiece oldPiece, ChessPiece newPiece)
+		{
+			ChessBoard.RemovePiece(oldPiece.Row, oldPiece.Column);
+			ChessBoard.AddPiece(newPiece, oldPiece.Row, oldPiece.Column);
+			return true;
+		}
+
+		private static void SetupPawns()
 		{
 			Pawn.PossibleStartingPositions(PieceColor.Black).ToList().ForEach(p =>
 			{
@@ -101,7 +140,7 @@ namespace Chess.Domain
 				ChessBoard.AddPiece(peice, p.Item1, p.Item2);
 			});
 		}
-		public static void SetupBishops()
+		private static void SetupBishops()
 		{
 			Bishop.PossibleStartingPositions(PieceColor.Black).ToList().ForEach(p =>
 			{
@@ -114,7 +153,7 @@ namespace Chess.Domain
 				ChessBoard.AddPiece(peice, p.Item1, p.Item2);
 			});
 		}
-		public static void SetupRooks()
+		private static void SetupRooks()
 		{
 			Rook.PossibleStartingPositions(PieceColor.Black).ToList().ForEach(p =>
 			{
@@ -128,7 +167,7 @@ namespace Chess.Domain
 			});
 		}
 
-		public static void SetupQueens()
+		private static void SetupQueens()
 		{
 			Queen.PossibleStartingPositions(PieceColor.Black).ToList().ForEach(p =>
 			{
@@ -142,7 +181,7 @@ namespace Chess.Domain
 			});
 		}
 
-		public static void SetupKings()
+		private static void SetupKings()
 		{
 			King.PossibleStartingPositions(PieceColor.Black).ToList().ForEach(p =>
 			{
@@ -156,7 +195,7 @@ namespace Chess.Domain
 			});
 		}
 
-		public static void SetupKnights()
+		private static void SetupKnights()
 		{
 			Knight.PossibleStartingPositions(PieceColor.Black).ToList().ForEach(p =>
 			{
