@@ -10,10 +10,10 @@ namespace Chess.Domain
 		private RowMoveStrategy RowStrategies { get; set; }
 		private ColumnMoveStrategy ColumnStrategies { get; set; }
 
-		public RookMoveStrategy()
+		public RookMoveStrategy(ChessBoard board) : base(board)
 		{
-			RowStrategies = new RowMoveStrategy();
-			ColumnStrategies = new ColumnMoveStrategy();
+			RowStrategies = new RowMoveStrategy(board);
+			ColumnStrategies = new ColumnMoveStrategy(board);
 		}
 		public override IEnumerable<Tuple<int, int>> GetMoveSet(int row, int col, PieceColor opposingPlayer)
 		{
@@ -25,6 +25,8 @@ namespace Chess.Domain
 			CaptureableLocation = new List<Tuple<int, int>>();
 			CaptureableLocation.AddRange(RowStrategies.CaptureableLocation);
 			CaptureableLocation.AddRange(ColumnStrategies.CaptureableLocation);
+			AllPossibleMoveLocations.AddRange(RowStrategies.AllPossibleMoveLocations);
+			AllPossibleMoveLocations.AddRange(ColumnStrategies.AllPossibleMoveLocations);
 
 			return strats;
 		}

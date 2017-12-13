@@ -9,7 +9,9 @@ namespace Chess.Domain
 	{
 		public FirstPlayer Player1 { get; set; }
 		public SecondPlayer Player2 { get; set; }
+		public ChessBoard ChessBoard { get; set; }
 		public int TurnCount { get; set; }
+		private bool _isGameStarted { get; set; }
 		public void GiveNextTurn(Player NextPlayer)
 		{
 			Player2.IsCurrentTurn = NextPlayer == Player1;
@@ -17,11 +19,14 @@ namespace Chess.Domain
 			TurnCount++;
 		}
 
-		public void StartGame(FirstPlayer player1, SecondPlayer player2)
+		public void StartGame(ChessBoard board, FirstPlayer player1, SecondPlayer player2)
 		{
+			ChessBoard = board;
 			ChessBoard.ResetBoard();
 			Player1 = player1;
 			Player2 = player2;
+			Player1.ChessBoard = board;
+			Player2.ChessBoard = board;
 			if (Player1.PieceColor == Player2.PieceColor)
 			{
 				Player1.PieceColor = Player1.PieceColor == PieceColor.White
@@ -32,6 +37,12 @@ namespace Chess.Domain
 			}
 
 			ChessBoard.SetupAllPieces();
+			_isGameStarted = true;
+		}
+
+		public bool IsGameStarted()
+		{
+			return _isGameStarted;
 		}
 	}
 }

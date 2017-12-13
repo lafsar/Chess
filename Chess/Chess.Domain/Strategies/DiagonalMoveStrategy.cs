@@ -7,6 +7,7 @@ namespace Chess.Domain
 {
 	public class DiagonalMoveStrategy : BaseMoveStrategy
 	{
+		public DiagonalMoveStrategy(ChessBoard board) : base(board) { }
 		public override IEnumerable<Tuple<int, int>> GetMoveSet(int row, int col, PieceColor opposingPlayer)
 		{
 			base.GetMoveSet(row, col, opposingPlayer);

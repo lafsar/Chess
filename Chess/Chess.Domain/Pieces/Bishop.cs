@@ -7,9 +7,9 @@ namespace Chess.Domain
 {
 	public sealed class Bishop : ChessPiece
 	{
-		public Bishop(PieceColor color) : base(color)
+		public Bishop(PieceColor color, ChessBoard board) : base(color, board)
 		{
-			MoveStrategy = new DiagonalMoveStrategy();
+			MoveStrategy = new DiagonalMoveStrategy(board);
 		}
 		public static IEnumerable<Tuple<int, int>> PossibleStartingPositions(PieceColor color)
 		{

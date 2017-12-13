@@ -8,5 +8,6 @@ namespace Chess.Domain
 	public interface IPlayerMediator
 	{
 		void GiveNextTurn(Player NextPlayer);
+		bool IsGameStarted();
 	}
 }

@@ -7,9 +7,9 @@ namespace Chess.Domain
 {
 	public sealed class Rook : ChessPiece
 	{
-		public Rook(PieceColor color) : base(color)
+		public Rook(PieceColor color, ChessBoard board) : base(color, board)
 		{
-			MoveStrategy = new RookMoveStrategy();
+			MoveStrategy = new RookMoveStrategy(board);
 		}
 		public static IEnumerable<Tuple<int,int>> PossibleStartingPositions(PieceColor color)
 		{

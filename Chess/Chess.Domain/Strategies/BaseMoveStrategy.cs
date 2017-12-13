@@ -10,8 +10,15 @@ namespace Chess.Domain
 		protected int CurrentRow { get; private set; }
 		protected int CurrentColumn { get; private set; }
 		protected PieceColor OpposingColor { get; private set; }
-		//TODO: expose all capture locations that match the enemy King piece to determine Checked state somehow?
 		public List<Tuple<int, int>> CaptureableLocation { get; protected set; }
+		//TODO: expose all capture locations that match the enemy King piece to determine Checked state somehow?
+		public List<Tuple<int, int>> AllPossibleMoveLocations { get; protected set; }
+		protected ChessBoard ChessBoard;
+		protected BaseMoveStrategy(ChessBoard board)
+		{
+			ChessBoard = board;
+			AllPossibleMoveLocations = new List<Tuple<int, int>>();
+		}
 		public virtual IEnumerable<Tuple<int, int>> GetMoveSet(int row, int col, PieceColor opposingPlayer)
 		{
 			CurrentRow = row;
@@ -34,6 +41,10 @@ namespace Chess.Domain
 			if (boardItem != null && boardItem.PieceColor == OpposingColor)
 			{
 				CaptureableLocation.Add(new Tuple<int, int>(row, col));
+			}
+			if (boardItem == null || (boardItem != null && boardItem.PieceColor != OpposingColor))
+			{
+				AllPossibleMoveLocations.Add(new Tuple<int, int>(row, col));
 			}
 		}
 	}

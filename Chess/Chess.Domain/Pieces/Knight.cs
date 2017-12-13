@@ -7,7 +7,7 @@ namespace Chess.Domain
 {
 	public sealed class Knight : ChessPiece
 	{
-		public Knight(PieceColor color) : base(color) { }
+		public Knight(PieceColor color, ChessBoard board) : base(color, board) { }
 		public static IEnumerable<Tuple<int, int>> PossibleStartingPositions(PieceColor color)
 		{
 			if (color == PieceColor.Black)

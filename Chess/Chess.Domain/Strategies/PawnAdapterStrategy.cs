@@ -9,7 +9,7 @@ namespace Chess.Domain
 	{
 		public int MoveCount { get; private set; }
 		public int Direction { get; private set; }
-		public PawnAdapterStrategy(int moveCount, int direction)
+		public PawnAdapterStrategy(int moveCount, int direction, ChessBoard board) : base(board)
 		{
 			MoveCount = moveCount;
 			Direction = direction;
@@ -52,10 +52,12 @@ namespace Chess.Domain
 			var isNextNextRowOccupied = ChessBoard.GetPiece(DoubleForward.Item1, CurrentColumn) != null;
 			if (!isNextRowOccupied)
 			{
+				AllPossibleMoveLocations.Add(new Tuple<int, int>(CurrentRow + Direction, CurrentColumn));
 				yield return new Tuple<int, int>(CurrentRow + Direction, CurrentColumn);
 			}
 			if (MoveCount == 0 && !isNextRowOccupied && !isNextNextRowOccupied)
 			{
+				AllPossibleMoveLocations.Add(new Tuple<int, int>(DoubleForward.Item1, CurrentColumn));
 				yield return new Tuple<int, int>(DoubleForward.Item1, CurrentColumn);
 			}
 		}

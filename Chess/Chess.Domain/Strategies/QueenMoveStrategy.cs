@@ -11,11 +11,11 @@ namespace Chess.Domain
 		private RowMoveStrategy RowStrategies { get; set; }
 		private ColumnMoveStrategy ColumnStrategies { get; set; }
 
-		public QueenMoveStrategy()
+		public QueenMoveStrategy(ChessBoard board) : base(board)
 		{
-			DiagonalStrategies = new DiagonalMoveStrategy();
-			RowStrategies = new RowMoveStrategy();
-			ColumnStrategies = new ColumnMoveStrategy();
+			DiagonalStrategies = new DiagonalMoveStrategy(board);
+			RowStrategies = new RowMoveStrategy(board);
+			ColumnStrategies = new ColumnMoveStrategy(board);
 		}
 		public override IEnumerable<Tuple<int, int>> GetMoveSet(int row, int col, PieceColor opposingPlayer)
 		{
@@ -29,6 +29,10 @@ namespace Chess.Domain
 			CaptureableLocation.AddRange(DiagonalStrategies.CaptureableLocation);
 			CaptureableLocation.AddRange(RowStrategies.CaptureableLocation);
 			CaptureableLocation.AddRange(ColumnStrategies.CaptureableLocation);
+
+			AllPossibleMoveLocations.AddRange(DiagonalStrategies.AllPossibleMoveLocations);
+			AllPossibleMoveLocations.AddRange(RowStrategies.AllPossibleMoveLocations);
+			AllPossibleMoveLocations.AddRange(ColumnStrategies.AllPossibleMoveLocations);
 
 			return strats;
 		}

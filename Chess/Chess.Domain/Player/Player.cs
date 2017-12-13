@@ -5,12 +5,16 @@ using System.Text;
 
 namespace Chess.Domain
 {
+	/// <summary>
+	/// Players must subscribe to a ChessGame in order to start playing
+	/// </summary>
 	public abstract class Player
 	{
 		public string Name { get; set; }
 		public PieceColor PieceColor { get; set; }
 		public bool IsCurrentTurn { get; set; }
 		protected IPlayerMediator _mediator;
+		public ChessBoard ChessBoard { get; set; }
 		public Player(IPlayerMediator mediator)
 		{
 			IsCurrentTurn = PieceColor == PieceColor.White;
@@ -19,12 +23,14 @@ namespace Chess.Domain
 
 		public void MovePiece(Tuple<int, int> from, Tuple<int, int> to)
 		{
-			var piece = ChessBoard.GetPiece(from.Item1, from.Item2);
-			if (IsCurrentTurn && piece != null && piece.PieceColor == PieceColor)
-			{
-				if (piece.Move(to.Item1, to.Item2))
+			if(_mediator.IsGameStarted()) { 
+				var piece = ChessBoard.GetPiece(from.Item1, from.Item2);
+				if (IsCurrentTurn && piece != null && piece.PieceColor == PieceColor)
 				{
-					AfterMove();
+					if (piece.Move(to.Item1, to.Item2))
+					{
+						AfterMove();
+					}
 				}
 			}
 		}
@@ -33,9 +39,12 @@ namespace Chess.Domain
 
 		public void PromotePawn(Tuple<int, int> from, string type)
 		{
-			if (ChessBoard.PromotePawn(from.Item1, from.Item2, PieceColor, type))
+			if (_mediator.IsGameStarted())
 			{
-				AfterMove();
+				if (ChessBoard.PromotePawn(from.Item1, from.Item2, PieceColor, type))
+				{
+					AfterMove();
+				}
 			}
 		}
 	}

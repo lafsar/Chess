@@ -27,10 +27,10 @@ namespace Chess.Domain
 			}
 		}
 
-		public Pawn(PieceColor color)
-			: base(color)
+		public Pawn(PieceColor color, ChessBoard board)
+			: base(color, board)
 		{
-			MoveStrategy = new PawnAdapterStrategy(MoveCount, Direction);
+			MoveStrategy = new PawnAdapterStrategy(MoveCount, Direction, board);
 		}
 
 		public static IEnumerable<Tuple<int, int>> PossibleStartingPositions(PieceColor color)
@@ -50,8 +50,9 @@ namespace Chess.Domain
 		protected override void AfterMove()
 		{
 			var destination = new Tuple<int, int>(Row, Column);
+			Console.WriteLine(MoveCount.ToString());
 			HasMovedDouble = MoveCount == 0 && destination.Equals((MoveStrategy as PawnAdapterStrategy).DoubleForward);
-			MoveStrategy = new PawnAdapterStrategy(MoveCount, Direction);
+			MoveStrategy = new PawnAdapterStrategy(MoveCount, Direction, ChessBoard);
 		}
 
 		protected override void HandleCapture(Tuple<int, int> destination)

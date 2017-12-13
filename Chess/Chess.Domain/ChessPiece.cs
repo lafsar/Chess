@@ -12,6 +12,7 @@ namespace Chess.Domain
 		public IMoveStrategy MoveStrategy { get; set; }
         private PieceColor _pieceColor;
 		public int MoveCount { get; protected set; }
+		protected ChessBoard ChessBoard;
 		public PieceColor PieceColor
         {
             get { return _pieceColor; }
@@ -27,9 +28,10 @@ namespace Chess.Domain
 					: PieceColor.Black;
 			}
 		}
-		protected ChessPiece(PieceColor pieceColor)
+		protected ChessPiece(PieceColor pieceColor, ChessBoard board)
 		{
 			PieceColor = pieceColor;
+			ChessBoard = board;
 		}
 
 		public virtual bool Move(int row, int column)
@@ -43,8 +45,9 @@ namespace Chess.Domain
 				SetPosition(row, column);
 				HandleCapture(destination);
 				ChessBoard.AddPiece(this, destination.Item1, destination.Item2);
-				AfterMove();
+				
 				MoveCount++;
+				AfterMove();
 			}
 			return canMove;
 		}
