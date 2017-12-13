@@ -22,8 +22,7 @@ namespace Chess.Domain
 			var piece = ChessBoard.GetPiece(from.Item1, from.Item2);
 			if (IsCurrentTurn && piece != null && piece.PieceColor == PieceColor)
 			{
-				var hasMoved = piece.Move(to.Item1, to.Item2);
-				if (hasMoved)
+				if (piece.Move(to.Item1, to.Item2))
 				{
 					AfterMove();
 				}

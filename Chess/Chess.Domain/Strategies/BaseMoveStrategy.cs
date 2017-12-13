@@ -11,7 +11,7 @@ namespace Chess.Domain
 		protected int CurrentColumn { get; private set; }
 		protected PieceColor OpposingColor { get; private set; }
 		//TODO: expose all capture locations that match the enemy King piece to determine Checked state somehow?
-		public Tuple<int, int> CaptureableLocation { get; private set; }
+		public List<Tuple<int, int>> CaptureableLocation { get; protected set; }
 		public virtual IEnumerable<Tuple<int, int>> GetMoveSet(int row, int col, PieceColor opposingPlayer)
 		{
 			CurrentRow = row;
@@ -30,9 +30,11 @@ namespace Chess.Domain
 
 		private void RaiseCapture(int row, int col, ChessPiece boardItem)
 		{
-			CaptureableLocation = boardItem != null && boardItem.PieceColor == OpposingColor
-							? new Tuple<int, int>(row, col)
-							: null;
+			CaptureableLocation = new List<Tuple<int, int>>();
+			if (boardItem != null && boardItem.PieceColor == OpposingColor)
+			{
+				CaptureableLocation.Add(new Tuple<int, int>(row, col));
+			}
 		}
 	}
 }

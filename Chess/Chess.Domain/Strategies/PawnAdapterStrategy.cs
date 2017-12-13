@@ -62,6 +62,7 @@ namespace Chess.Domain
 
 		public IEnumerable<Tuple<int, int>> PawnCaptureMoves()
 		{
+			CaptureableLocation = new List<Tuple<int, int>>();
 			var isDiagRightCapturable = ChessBoard.GetPiece(DiagonalRight.Item1, DiagonalRight.Item2) != null
 				&& ChessBoard.GetPiece(DiagonalRight.Item1, DiagonalRight.Item2).PieceColor == OpposingColor;
 
@@ -78,10 +79,12 @@ namespace Chess.Domain
 
 			if (isDiagRightCapturable || isDiagRightPassantable)
 			{
+				CaptureableLocation.Add(DiagonalRight);
 				yield return DiagonalRight;
 			}
 			if (isDiagLeftCapturable || isDiagLeftPassantable)
 			{
+				CaptureableLocation.Add(DiagonalLeft);
 				yield return DiagonalLeft;
 			}
 		}

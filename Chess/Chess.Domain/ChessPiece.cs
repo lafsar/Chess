@@ -44,13 +44,14 @@ namespace Chess.Domain
 				HandleCapture(destination);
 				ChessBoard.AddPiece(this, destination.Item1, destination.Item2);
 				AfterMove();
+				MoveCount++;
 			}
 			return canMove;
 		}
 
 		protected virtual void BeforeMove() {}
 		protected virtual void AfterMove() {
-			MoveCount++;
+			
 		}
 
         public override string ToString()

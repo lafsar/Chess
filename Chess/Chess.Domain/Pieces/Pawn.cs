@@ -51,7 +51,6 @@ namespace Chess.Domain
 		{
 			var destination = new Tuple<int, int>(Row, Column);
 			HasMovedDouble = MoveCount == 0 && destination.Equals((MoveStrategy as PawnAdapterStrategy).DoubleForward);
-			MoveCount++;
 			MoveStrategy = new PawnAdapterStrategy(MoveCount, Direction);
 		}
 

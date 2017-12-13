@@ -21,9 +21,16 @@ namespace Chess.Domain
 		{
 			//base.GetMoveSet(row, col, opposingPlayer);
 
-			return DiagonalStrategies.GetMoveSet(row, col, opposingPlayer)
+			var strats = DiagonalStrategies.GetMoveSet(row, col, opposingPlayer)
 				.Concat(RowStrategies.GetMoveSet(row, col, opposingPlayer))
 				.Concat(ColumnStrategies.GetMoveSet(row, col, opposingPlayer));
+
+			CaptureableLocation = new List<Tuple<int, int>>();
+			CaptureableLocation.AddRange(DiagonalStrategies.CaptureableLocation);
+			CaptureableLocation.AddRange(RowStrategies.CaptureableLocation);
+			CaptureableLocation.AddRange(ColumnStrategies.CaptureableLocation);
+
+			return strats;
 		}
 	}
 }
