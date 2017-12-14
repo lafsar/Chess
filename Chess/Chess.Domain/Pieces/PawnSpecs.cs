@@ -125,7 +125,7 @@ namespace Chess.Domain
 		[Test]
 		public void _12_making_a_legal_move_by_placing_the_black_pawn_on_X_equals_1_and_Y_eqauls_3_and_moving_to_X_equals_3_and_Y_eqauls_3_should_move_the_pawn()
 		{
-
+			//Double forward
 			_chessBoard.AddOrReplacePiece(_pawn, 1, 3);
 			_pawn.Move(3, 3);
 			Assert.That(_pawn.Row, Is.EqualTo(3));
@@ -145,9 +145,10 @@ namespace Chess.Domain
     }
 
     [TestFixture]
-    public class When_using_a_white_pawn_and
+    public class When_using_a_white_pawn_and_capturing_scenarios
     {
-		private Pawn _pawn;
+		private Pawn _pawn1;
+		private Pawn _pawn2;
 		private ChessBoard _chessBoard;
 
 		[SetUp]
@@ -155,44 +156,51 @@ namespace Chess.Domain
         {
 			_chessBoard = new ChessBoard();
 			_chessBoard.ResetBoard();
-			_pawn = new Pawn(PieceColor.White, _chessBoard);
+			_pawn1 = new Pawn(PieceColor.White, _chessBoard);
+			_pawn2 = new Pawn(PieceColor.Black, _chessBoard);
 			
 		}
 
         [Test]
-        public void _01_placing_the_white_pawn_on_X_equals_6_and_Y_equals_1_should_place_the_white_pawn_on_that_place_on_the_board()
+        public void _01_white_pawn_capture_black_pawn_at_row_5_col_2()
         {
-
-			_chessBoard.AddOrReplacePiece(_pawn, 6, 1);
-			Assert.That(_pawn.Row, Is.EqualTo(6));
-            Assert.That(_pawn.Column, Is.EqualTo(1));
-        }
+			
+			_chessBoard.AddOrReplacePiece(_pawn2, 5, 2);
+			_chessBoard.AddOrReplacePiece(_pawn1, 6, 1);
+			_pawn1.Move(5, 2);
+			Assert.That(_pawn1.Row, Is.EqualTo(5));
+            Assert.That(_pawn1.Column, Is.EqualTo(2));
+			Assert.That(_chessBoard.GetPiece(5, 2), Is.EqualTo(_pawn1));
+		}
 
         [Test]
-        public void _10_making_an_illegal_move_by_placing_the_white_pawn_on_X_equals_6_and_Y_eqauls_1_and_moving_to_X_equals_7_and_Y_eqauls_2_should_not_move_the_pawn()
+        public void _10_white_pawn_en_passant_to_3_2()
         {
-			_chessBoard.AddOrReplacePiece(_pawn, 6, 1);
-			_pawn.Move(7, 2);
-            Assert.That(_pawn.Row, Is.EqualTo(6));
-            Assert.That(_pawn.Column, Is.EqualTo(1));
-        }
+			_chessBoard.AddOrReplacePiece(_pawn2, 1, 2);
+			_pawn2.Move(3, 2);
+			_chessBoard.AddOrReplacePiece(_pawn1, 3, 3);
+			_pawn1.Move(2, 2);
+            Assert.That(_pawn1.Row, Is.EqualTo(2));
+            Assert.That(_pawn1.Column, Is.EqualTo(2));
+			Assert.That(_chessBoard.GetPiece(3, 2), Is.EqualTo(null));
+		}
 
         [Test]
         public void _11_making_an_illegal_move_by_placing_the_white_pawn_on_X_equals_6_and_Y_eqauls_1_and_moving_to_X_equals_6_and_Y_eqauls_4_should_not_move_the_pawn()
         {
-			_chessBoard.AddOrReplacePiece(_pawn, 6, 1);
-			_pawn.Move(6, 4);
-            Assert.That(_pawn.Row, Is.EqualTo(6));
-            Assert.That(_pawn.Column, Is.EqualTo(1));
+			_chessBoard.AddOrReplacePiece(_pawn1, 6, 1);
+			_pawn1.Move(6, 4);
+            Assert.That(_pawn1.Row, Is.EqualTo(6));
+            Assert.That(_pawn1.Column, Is.EqualTo(1));
         }
 
         [Test]
         public void _20_making_a_illegal_move_by_placing_the_white_pawn_on_X_equals_6_and_Y_eqauls_1_and_moving_to_X_equals_7_and_Y_eqauls_1_should_not_move_the_pawn()
         {
-			_chessBoard.AddOrReplacePiece(_pawn, 6, 1);
-			_pawn.Move(7, 1);
-            Assert.That(_pawn.Row, Is.EqualTo(6));
-            Assert.That(_pawn.Column, Is.EqualTo(1));
+			_chessBoard.AddOrReplacePiece(_pawn1, 6, 1);
+			_pawn1.Move(7, 1);
+            Assert.That(_pawn1.Row, Is.EqualTo(6));
+            Assert.That(_pawn1.Column, Is.EqualTo(1));
         }
 
     }

@@ -51,6 +51,7 @@ namespace Chess.Domain
 			}
 			if (canMove && !willBeChecked)
 			{
+				BeforeMove(destination);
 				ChessBoard.RemovePiece(Row, Column);
 				SetPosition(row, column);
 				HandleCapture(destination);
@@ -61,7 +62,7 @@ namespace Chess.Domain
 			return canMove;
 		}
 
-		protected virtual void BeforeMove() {}
+		protected virtual void BeforeMove(Tuple<int, int> destination) {}
 		protected virtual void AfterMove() {
 			
 		}

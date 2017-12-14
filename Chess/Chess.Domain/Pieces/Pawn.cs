@@ -46,11 +46,14 @@ namespace Chess.Domain
 				}
 			}
 		}
+		protected override void BeforeMove(Tuple<int, int> destination)
+		{
+			HasMovedDouble = MoveCount == 0 && destination.Equals((MoveStrategy as PawnAdapterStrategy).DoubleForward);
+		}
 
 		protected override void AfterMove()
 		{
 			var destination = new Tuple<int, int>(Row, Column);
-			HasMovedDouble = MoveCount == 0 && destination.Equals((MoveStrategy as PawnAdapterStrategy).DoubleForward);
 			MoveStrategy = new PawnAdapterStrategy(MoveCount, Direction, ChessBoard);
 		}
 

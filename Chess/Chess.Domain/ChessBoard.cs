@@ -14,7 +14,7 @@ namespace Chess.Domain
             {
                 if (_instance == null)
                 {
-                    _instance = new ChessPiece[ChessConstants.MAX_BOARD_ROWS - 1, ChessConstants.MAX_BOARD_COLUMNS - 1];
+                    _instance = new ChessPiece[ChessConstants.MAX_BOARD_ROWS, ChessConstants.MAX_BOARD_COLUMNS];
                 }
                 return _instance;
             }
