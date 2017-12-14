@@ -131,6 +131,7 @@ namespace Chess.Domain
 
 		public void RemovePiece(int row, int column)
 		{
+			Console.WriteLine("delete" + row + column);
 			Board[row, column] = null;
 			//UpdateBoardState();
 		}

@@ -19,14 +19,7 @@ namespace Chess.Domain
 		{
 			base.GetMoveSet(row, col, opposingPlayer);
 			
-			var allPawnMoves = PawnAdvanceMoves().Concat(PawnCaptureMoves());
-			allPawnMoves.ToList().ForEach(i =>
-			{
-				if (OpposingColor == PieceColor.Black) { 
-					Console.WriteLine(i);
-				}
-			});
-			
+			var allPawnMoves = PawnAdvanceMoves().Concat(PawnCaptureMoves());			
 			return allPawnMoves;
 		}
 
@@ -101,17 +94,9 @@ namespace Chess.Domain
 
 		private bool DeterminePassantable(Tuple<int, int> attackDirection, ChessPiece adjacentEnemy)
 		{
-			
-			
 			var isPassantable = (adjacentEnemy as Pawn) != null && ChessBoard.GetPiece(attackDirection.Item1, attackDirection.Item2) == null
 				&& adjacentEnemy.PieceColor == OpposingColor && (adjacentEnemy as Pawn).MoveCount == 1
-				&& (adjacentEnemy as Pawn).HasMovedDouble;
-			if (OpposingColor == PieceColor.Black && adjacentEnemy != null)
-			{
-				Console.WriteLine(adjacentEnemy.PieceColor == OpposingColor);
-				//Console.WriteLine(isPassantable);
-			}
-			
+				&& (adjacentEnemy as Pawn).HasMovedDouble;			
 			return isPassantable;
 		}
 	}

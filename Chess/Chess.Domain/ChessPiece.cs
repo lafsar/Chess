@@ -54,6 +54,9 @@ namespace Chess.Domain
 				BeforeMove(destination);
 				ChessBoard.RemovePiece(Row, Column);
 				SetPosition(row, column);
+				if (PieceColor == PieceColor.Black) {
+					Console.WriteLine("actual: " + Row + "-" + Column);
+				}
 				HandleCapture(destination);
 				MoveCount++;
 				ChessBoard.AddOrReplacePiece(this, destination.Item1, destination.Item2);

@@ -62,8 +62,8 @@ namespace Chess.Domain
 			if ((destination.Equals((MoveStrategy as PawnAdapterStrategy).DiagonalLeft) || destination.Equals((MoveStrategy as PawnAdapterStrategy).DiagonalRight))
 				&& ChessBoard.GetPiece(destination.Item1, destination.Item2) == null)
 			{
-				//For en-passant
-				ChessBoard.RemovePiece(destination.Item1 + Direction, destination.Item2);
+				//For en-passant (need to remove the pawn which is currently in the opposite direction)
+				ChessBoard.RemovePiece(destination.Item1 + (Direction * -1), destination.Item2);
 			}
 		}
 	}

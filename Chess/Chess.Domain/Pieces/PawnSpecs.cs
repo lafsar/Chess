@@ -174,7 +174,7 @@ namespace Chess.Domain
 		}
 
         [Test]
-        public void _10_white_pawn_en_passant_to_3_2()
+        public void _10_white_pawn_en_passant_to_2_2()
         {
 			_chessBoard.AddOrReplacePiece(_pawn2, 1, 2);
 			_pawn2.Move(3, 2);
@@ -182,6 +182,7 @@ namespace Chess.Domain
 			_pawn1.Move(2, 2);
             Assert.That(_pawn1.Row, Is.EqualTo(2));
             Assert.That(_pawn1.Column, Is.EqualTo(2));
+			Assert.That(_chessBoard.GetPiece(1, 2), Is.EqualTo(null));
 			Assert.That(_chessBoard.GetPiece(3, 2), Is.EqualTo(null));
 		}
 
