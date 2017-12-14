@@ -26,7 +26,23 @@ namespace Chess.Domain
 
 		public bool IsCheckMated()
 		{
-			return IsInCheck && !(MoveStrategy as KingMoveStrategy).GetMoveSet(Row, Column, OpposingColor).Any();
+			return IsInCheck && !(MoveStrategy as KingMoveStrategy).GetMoveSet(Row, Column, OpposingColor).Any() && !CanDefendTheKing();
+		}
+
+		private bool CanDefendTheKing()
+		{
+			var locations = PieceColor == PieceColor.Black
+				? ChessBoard.BlackMoveLocations
+				: ChessBoard.WhiteMoveLocations;
+
+			return locations.Exists(l =>
+			{
+				ChessBoard.UpdateBoardState(l);
+				var king = PieceColor == PieceColor.Black
+					? ChessBoard.BlackKing
+					: ChessBoard.WhiteKing;
+				return !king.IsInCheck;
+			});
 		}
 	}
 }

@@ -92,8 +92,14 @@ namespace Chess.Domain
 					}
 				}
 			}
-			WhiteKing.IsInCheck = BlackCapturableLocations.Contains(new Tuple<int, int>(WhiteKing.Row, WhiteKing.Column));
-			BlackKing.IsInCheck = WhiteCapturableLocations.Contains(new Tuple<int, int>(BlackKing.Row, BlackKing.Column));
+			if (WhiteKing != null)
+			{ 
+				WhiteKing.IsInCheck = BlackCapturableLocations.Contains(new Tuple<int, int>(WhiteKing.Row, WhiteKing.Column));
+			}
+			if (BlackKing != null)
+			{
+				BlackKing.IsInCheck = WhiteCapturableLocations.Contains(new Tuple<int, int>(BlackKing.Row, BlackKing.Column));
+			}
 		}
 
 		private void AddLocations(PieceColor color, IMoveStrategy strategy)

@@ -39,13 +39,16 @@ namespace Chess.Domain
 			var destination = new Tuple<int, int>(row, column);
 			var origin = new Tuple<int, int>(Row, Column);
 			var canMove = MoveStrategy.GetMoveSet(Row, Column, OpposingColor).Any(t => t.Equals(destination));
+			var willBeChecked = false;
 			//Check to see if next move will put us in check
-			ChessBoard.UpdateBoardState(destination);
-			var willBeChecked = PieceColor == PieceColor.Black
-				? ChessBoard.BlackKing.IsInCheck
-				: ChessBoard.WhiteKing.IsInCheck;
-			//Reset state back to what it was
-			ChessBoard.UpdateBoardState(origin);
+			if (ChessBoard.BlackKing != null && ChessBoard.WhiteKing != null) { 	
+				ChessBoard.UpdateBoardState(destination);
+				willBeChecked = PieceColor == PieceColor.Black
+					? ChessBoard.BlackKing.IsInCheck
+					: ChessBoard.WhiteKing.IsInCheck;
+				//Reset state back to what it was
+				ChessBoard.UpdateBoardState(origin);
+			}
 			if (canMove && !willBeChecked)
 			{
 				ChessBoard.RemovePiece(Row, Column);
