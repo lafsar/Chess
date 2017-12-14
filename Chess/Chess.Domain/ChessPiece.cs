@@ -38,14 +38,13 @@ namespace Chess.Domain
 		{
 			var destination = new Tuple<int, int>(row, column);
 			var canMove = MoveStrategy.GetMoveSet(Row, Column, OpposingColor).Any(t => t.Equals(destination));
+			BeforeMove();
 			if (canMove)
 			{
-				BeforeMove();
 				ChessBoard.RemovePiece(Row, Column);
 				SetPosition(row, column);
 				HandleCapture(destination);
 				ChessBoard.AddPiece(this, destination.Item1, destination.Item2);
-				
 				MoveCount++;
 				AfterMove();
 			}

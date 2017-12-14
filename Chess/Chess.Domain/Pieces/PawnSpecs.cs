@@ -102,6 +102,7 @@ namespace Chess.Domain
         [Test]
         public void _10_making_an_illegal_move_by_placing_the_black_pawn_on_Row_equals_1_and_Column_eqauls_3_and_moving_to_Row_equals_2_and_Column_eqauls_3_should_not_move_the_pawn()
         {
+			//Pawn cant move to occupied space when moving forward
 			_chessBoard.AddPiece(_pawn, 1, 3);
 			var blockingPawn = new Pawn(PieceColor.Black, _chessBoard);
 			_chessBoard.AddPiece(blockingPawn, 2, 3);
@@ -113,6 +114,7 @@ namespace Chess.Domain
         [Test]
         public void _11_making_an_illegal_move_by_placing_the_black_pawn_on_X_equals_1_and_Y_eqauls_3_and_moving_to_X_equals_4_and_Y_eqauls_3_should_not_move_the_pawn()
         {
+			//Pawn cant move double after first move
 			_chessBoard.AddPiece(_pawn, 1, 3);
 			_pawn.Move(2, 3);
 			_pawn.Move(4, 3);

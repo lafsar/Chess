@@ -23,14 +23,12 @@ namespace Chess.Domain
 
 		public void MovePiece(Tuple<int, int> from, Tuple<int, int> to)
 		{
-			if(_mediator.IsGameStarted()) { 
-				var piece = ChessBoard.GetPiece(from.Item1, from.Item2);
-				if (IsCurrentTurn && piece != null && piece.PieceColor == PieceColor)
+			var piece = ChessBoard.GetPiece(from.Item1, from.Item2);
+			if (_mediator.IsGameStarted() && IsCurrentTurn && piece != null && piece.PieceColor == PieceColor)
+			{
+				if (piece.Move(to.Item1, to.Item2))
 				{
-					if (piece.Move(to.Item1, to.Item2))
-					{
-						AfterMove();
-					}
+					AfterMove();
 				}
 			}
 		}
@@ -39,12 +37,9 @@ namespace Chess.Domain
 
 		public void PromotePawn(Tuple<int, int> from, string type)
 		{
-			if (_mediator.IsGameStarted())
+			if (_mediator.IsGameStarted() && ChessBoard.PromotePawn(from.Item1, from.Item2, PieceColor, type))
 			{
-				if (ChessBoard.PromotePawn(from.Item1, from.Item2, PieceColor, type))
-				{
-					AfterMove();
-				}
+				AfterMove();
 			}
 		}
 	}

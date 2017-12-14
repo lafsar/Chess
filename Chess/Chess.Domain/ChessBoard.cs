@@ -20,8 +20,22 @@ namespace Chess.Domain
             }
         }
 
+		public List<Tuple<int, int>> BlackCapturableLocations { get; private set; }
+		public List<Tuple<int, int>> BlackMoveLocations { get; private set; }
+
+		public List<Tuple<int, int>> WhiteCapturableLocations { get; private set; }
+		public List<Tuple<int, int>> WhiteMoveLocations { get; private set; }
+
+
+		public King BlackKing { get; private set; }
+		public King WhiteKing{ get; private set; }
+
 		public void UpdateBoardState()
 		{
+			BlackCapturableLocations = new List<Tuple<int, int>>();
+			BlackMoveLocations = new List<Tuple<int, int>>();
+			WhiteCapturableLocations = new List<Tuple<int, int>>();
+			WhiteMoveLocations = new List<Tuple<int, int>>();
 			for (var i = 0; i < Board.GetLength(0); i++)
 			{
 				for (var j = 0; j < Board.GetLength(1); j++)
@@ -35,26 +49,56 @@ namespace Chess.Domain
 						{
 							case "Pawn":
 								piece.MoveStrategy = new PawnAdapterStrategy(piece.MoveCount, (piece as Pawn).Direction, this);
+								AddLocations(piece.PieceColor, piece.MoveStrategy);
 								break;
 							case "Rook":
 								piece.MoveStrategy = new RookMoveStrategy(this);
+								AddLocations(piece.PieceColor, piece.MoveStrategy);
 								break;
 							case "Knight":
+								piece.MoveStrategy = new KnightMoveStrategy(this);
+								AddLocations(piece.PieceColor, piece.MoveStrategy);
+								break;
 							case "Bishop":
 								piece.MoveStrategy = new DiagonalMoveStrategy(this);
+								AddLocations(piece.PieceColor, piece.MoveStrategy);
 								break;
 							case "Queen":
 								piece.MoveStrategy = new QueenMoveStrategy(this);
+								AddLocations(piece.PieceColor, piece.MoveStrategy);
 								break;
 							case "King":
+								piece.MoveStrategy = new KingMoveStrategy(this);
+								AddLocations(piece.PieceColor, piece.MoveStrategy);
+								if (piece.PieceColor == PieceColor.White)
+								{
+									WhiteKing = piece as King;
+								} else
+								{
+									BlackKing = piece as King;
+								}
+								break;
 							default:
 								break;
 					
 						}
-
-						
 					}
 				}
+			}
+			WhiteKing.IsInCheck = BlackCapturableLocations.Contains(new Tuple<int, int>(WhiteKing.Row, WhiteKing.Column));
+			BlackKing.IsInCheck = WhiteCapturableLocations.Contains(new Tuple<int, int>(BlackKing.Row, BlackKing.Column));
+		}
+
+		private void AddLocations(PieceColor color, IMoveStrategy strategy)
+		{
+			if (color == PieceColor.White)
+			{
+				WhiteMoveLocations = strategy.GetAllMoves();
+				WhiteCapturableLocations = strategy.GetCapturable();
+			} else
+			{
+				BlackCapturableLocations = strategy.GetCapturable();
+				BlackMoveLocations = strategy.GetAllMoves();
 			}
 		}
 
@@ -71,6 +115,7 @@ namespace Chess.Domain
 			{
 				Board[row, column] = piece;
 				piece.SetPosition(row, column);
+				UpdateBoardState();
 			}
 			else
 			{
@@ -83,6 +128,7 @@ namespace Chess.Domain
 			if (GetPiece(row, column) != null)
 			{
 				Board[row, column] = null;
+				UpdateBoardState();
 			}
 		}
 

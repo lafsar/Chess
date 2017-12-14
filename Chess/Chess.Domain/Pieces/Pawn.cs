@@ -50,7 +50,6 @@ namespace Chess.Domain
 		protected override void AfterMove()
 		{
 			var destination = new Tuple<int, int>(Row, Column);
-			Console.WriteLine(MoveCount.ToString());
 			HasMovedDouble = MoveCount == 0 && destination.Equals((MoveStrategy as PawnAdapterStrategy).DoubleForward);
 			MoveStrategy = new PawnAdapterStrategy(MoveCount, Direction, ChessBoard);
 		}

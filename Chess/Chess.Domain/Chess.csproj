@@ -54,8 +54,9 @@
     <Compile Include="Player\Player.cs" />
     <Compile Include="Player\ChessGame.cs" />
     <Compile Include="Player\SecondPlayer.cs" />
-    <Compile Include="States\KingState.cs" />
     <Compile Include="Strategies\BaseMoveStrategy.cs" />
+    <Compile Include="Strategies\KingMoveStrategy.cs" />
+    <Compile Include="Strategies\KnightMoveStrategy.cs" />
     <Compile Include="Strategies\PawnAdapterStrategy.cs" />
     <Compile Include="Strategies\ColumnMoveStrategy.cs" />
     <Compile Include="Strategies\DiagonalMoveStrategy.cs" />

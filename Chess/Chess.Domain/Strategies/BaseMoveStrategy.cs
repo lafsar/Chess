@@ -11,13 +11,13 @@ namespace Chess.Domain
 		protected int CurrentColumn { get; private set; }
 		protected PieceColor OpposingColor { get; private set; }
 		public List<Tuple<int, int>> CaptureableLocation { get; protected set; }
-		//TODO: expose all capture locations that match the enemy King piece to determine Checked state somehow?
 		public List<Tuple<int, int>> AllPossibleMoveLocations { get; protected set; }
 		protected ChessBoard ChessBoard;
 		protected BaseMoveStrategy(ChessBoard board)
 		{
 			ChessBoard = board;
 			AllPossibleMoveLocations = new List<Tuple<int, int>>();
+			CaptureableLocation = new List<Tuple<int, int>>();
 		}
 		public virtual IEnumerable<Tuple<int, int>> GetMoveSet(int row, int col, PieceColor opposingPlayer)
 		{
@@ -28,16 +28,32 @@ namespace Chess.Domain
 			return new List<Tuple<int, int>>();
 		}
 
+		public List<Tuple<int,int>> GetCapturable()
+		{
+			return CaptureableLocation;
+		}
+
+		public List<Tuple<int, int>> GetAllMoves()
+		{
+			return AllPossibleMoveLocations;
+		}
+
 		public bool IsLocationBlocked(int row, int col)
 		{
 			var boardItem = ChessBoard.GetPiece(row, col);
 			RaiseCapture(row, col, boardItem);
 			return boardItem != null && boardItem.PieceColor != OpposingColor;
+
+		}
+		public bool IsLocationBlocked(Tuple<int, int> move)
+		{
+			var boardItem = ChessBoard.GetPiece(move.Item1, move.Item2);
+			RaiseCapture(move.Item1, move.Item2, boardItem);
+			return boardItem != null && boardItem.PieceColor != OpposingColor;
 		}
 
 		private void RaiseCapture(int row, int col, ChessPiece boardItem)
 		{
-			CaptureableLocation = new List<Tuple<int, int>>();
 			if (boardItem != null && boardItem.PieceColor == OpposingColor)
 			{
 				CaptureableLocation.Add(new Tuple<int, int>(row, col));
