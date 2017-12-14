@@ -7,16 +7,8 @@ namespace Chess.Domain
 {
 	public class KingMoveStrategy : BaseMoveStrategy
 	{
-		//public bool IsChecked { get; set; }
-		//public bool CheckMated { get; set; }
 		public KingMoveStrategy(ChessBoard board) : base(board)
 		{
-			//if (ChessBoard.BlackKing != null && ChessBoard.WhiteKing != null) { 
-			//var currentPos = PieceColor == PieceColor.Black
-			//	? new Tuple(ChessBoard.BlackKing.Row, ChessBoard.BlackKing.Column)
-			//	: new Tuple(ChessBoard.WhiteKing.Row, ChessBoard.WhiteKing.Column)
-			//IsChecked =
-			//}
 		}
 
 		public override IEnumerable<Tuple<int, int>> GetMoveSet(int row, int col, PieceColor opposingPlayer)

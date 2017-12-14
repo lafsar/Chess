@@ -7,11 +7,11 @@ namespace Chess.Domain
 {
 	public sealed class King : ChessPiece
 	{
+		public bool IsInCheck { get; set; }
 		public King(PieceColor color, ChessBoard board) : base(color, board)
 		{
 			MoveStrategy = new KingMoveStrategy(board);
 		}
-		public bool IsInCheck { get; set; }
 		public static IEnumerable<Tuple<int, int>> PossibleStartingPositions(PieceColor color)
 		{
 			if (color == PieceColor.Black)
@@ -22,6 +22,11 @@ namespace Chess.Domain
 			{
 				yield return new Tuple<int, int>(ChessConstants.MAX_BOARD_ROWS - 1, 4);
 			}
+		}
+
+		public bool IsCheckMated()
+		{
+			return IsInCheck && !(MoveStrategy as KingMoveStrategy).GetMoveSet(Row, Column, OpposingColor).Any();
 		}
 	}
 }

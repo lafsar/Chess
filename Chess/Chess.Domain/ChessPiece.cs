@@ -37,15 +37,22 @@ namespace Chess.Domain
 		public virtual bool Move(int row, int column)
 		{
 			var destination = new Tuple<int, int>(row, column);
+			var origin = new Tuple<int, int>(Row, Column);
 			var canMove = MoveStrategy.GetMoveSet(Row, Column, OpposingColor).Any(t => t.Equals(destination));
-			BeforeMove();
-			if (canMove)
+			//Check to see if next move will put us in check
+			ChessBoard.UpdateBoardState(destination);
+			var willBeChecked = PieceColor == PieceColor.Black
+				? ChessBoard.BlackKing.IsInCheck
+				: ChessBoard.WhiteKing.IsInCheck;
+			//Reset state back to what it was
+			ChessBoard.UpdateBoardState(origin);
+			if (canMove && !willBeChecked)
 			{
 				ChessBoard.RemovePiece(Row, Column);
 				SetPosition(row, column);
 				HandleCapture(destination);
-				ChessBoard.AddPiece(this, destination.Item1, destination.Item2);
 				MoveCount++;
+				ChessBoard.AddOrReplacePiece(this, destination.Item1, destination.Item2);
 				AfterMove();
 			}
 			return canMove;
@@ -63,10 +70,10 @@ namespace Chess.Domain
 
 		protected virtual void HandleCapture(Tuple<int, int> destination)
 		{
-			if (ChessBoard.GetPiece(destination.Item1, destination.Item2) != null)
-			{
-				ChessBoard.RemovePiece(destination.Item1, destination.Item2);
-			}
+			//if (ChessBoard.GetPiece(destination.Item1, destination.Item2) != null)
+			//{
+			//	ChessBoard.RemovePiece(destination.Item1, destination.Item2);
+			//}
 		}
 	}
 }

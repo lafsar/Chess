@@ -56,17 +56,11 @@ namespace Chess.Domain
 
 		protected override void HandleCapture(Tuple<int, int> destination)
 		{
-			if (destination.Equals((MoveStrategy as PawnAdapterStrategy).DiagonalLeft) || destination.Equals((MoveStrategy as PawnAdapterStrategy).DiagonalRight))
+			if ((destination.Equals((MoveStrategy as PawnAdapterStrategy).DiagonalLeft) || destination.Equals((MoveStrategy as PawnAdapterStrategy).DiagonalRight))
+				&& ChessBoard.GetPiece(destination.Item1, destination.Item2) == null)
 			{
-				if (ChessBoard.GetPiece(destination.Item1, destination.Item2) != null)
-				{
-					ChessBoard.RemovePiece(destination.Item1, destination.Item2);
-				}
-				else
-				{
-					//For en-passant
-					ChessBoard.RemovePiece(destination.Item1 + Direction, destination.Item2);
-				}
+				//For en-passant
+				ChessBoard.RemovePiece(destination.Item1 + Direction, destination.Item2);
 			}
 		}
 	}

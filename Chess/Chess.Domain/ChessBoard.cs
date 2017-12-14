@@ -30,7 +30,7 @@ namespace Chess.Domain
 		public King BlackKing { get; private set; }
 		public King WhiteKing{ get; private set; }
 
-		public void UpdateBoardState()
+		public void UpdateBoardState(Tuple<int, int> destination = null)
 		{
 			BlackCapturableLocations = new List<Tuple<int, int>>();
 			BlackMoveLocations = new List<Tuple<int, int>>();
@@ -44,32 +44,37 @@ namespace Chess.Domain
 					if (piece != null)
 					{
 						var type = piece.GetType().ToString();
+						var opposingColor = piece.PieceColor == PieceColor.Black
+							? PieceColor.White
+							: PieceColor.Black;
 
-						switch(type)
+						var row = destination != null
+							? destination.Item1
+							: piece.Row;
+
+						var col = destination != null
+							? destination.Item2
+							: piece.Column;
+
+						switch (type)
 						{
 							case "Pawn":
 								piece.MoveStrategy = new PawnAdapterStrategy(piece.MoveCount, (piece as Pawn).Direction, this);
-								AddLocations(piece.PieceColor, piece.MoveStrategy);
 								break;
 							case "Rook":
 								piece.MoveStrategy = new RookMoveStrategy(this);
-								AddLocations(piece.PieceColor, piece.MoveStrategy);
 								break;
 							case "Knight":
 								piece.MoveStrategy = new KnightMoveStrategy(this);
-								AddLocations(piece.PieceColor, piece.MoveStrategy);
 								break;
 							case "Bishop":
 								piece.MoveStrategy = new DiagonalMoveStrategy(this);
-								AddLocations(piece.PieceColor, piece.MoveStrategy);
 								break;
 							case "Queen":
 								piece.MoveStrategy = new QueenMoveStrategy(this);
-								AddLocations(piece.PieceColor, piece.MoveStrategy);
 								break;
 							case "King":
 								piece.MoveStrategy = new KingMoveStrategy(this);
-								AddLocations(piece.PieceColor, piece.MoveStrategy);
 								if (piece.PieceColor == PieceColor.White)
 								{
 									WhiteKing = piece as King;
@@ -82,6 +87,8 @@ namespace Chess.Domain
 								break;
 					
 						}
+						piece.MoveStrategy.GetMoveSet(row, col, opposingColor);
+						AddLocations(piece.PieceColor, piece.MoveStrategy);
 					}
 				}
 			}
@@ -109,27 +116,17 @@ namespace Chess.Domain
 				: null;
 		}
 
-		public void AddPiece(ChessPiece piece, int row, int column)
+		public void AddOrReplacePiece(ChessPiece piece, int row, int column)
 		{
-			if (GetPiece(row, column) == null)
-			{
-				Board[row, column] = piece;
-				piece.SetPosition(row, column);
-				UpdateBoardState();
-			}
-			else
-			{
-				throw new Exception("Not a valid position!");
-			}
+			Board[row, column] = piece;
+			piece.SetPosition(row, column);
+			UpdateBoardState();
 		}
 
 		public void RemovePiece(int row, int column)
 		{
-			if (GetPiece(row, column) != null)
-			{
-				Board[row, column] = null;
-				UpdateBoardState();
-			}
+			Board[row, column] = null;
+			//UpdateBoardState();
 		}
 
 		public bool IsLegalBoardPosition(int row, int column)
@@ -206,8 +203,7 @@ namespace Chess.Domain
 
 		private bool SwitchPiece(ChessPiece oldPiece, ChessPiece newPiece)
 		{
-			RemovePiece(oldPiece.Row, oldPiece.Column);
-			AddPiece(newPiece, oldPiece.Row, oldPiece.Column);
+			AddOrReplacePiece(newPiece, oldPiece.Row, oldPiece.Column);
 			return true;
 		}
 
@@ -216,12 +212,12 @@ namespace Chess.Domain
 			Pawn.PossibleStartingPositions(PieceColor.Black).ToList().ForEach(p =>
 			{
 				var peice = new Pawn(PieceColor.Black, this);
-				AddPiece(peice, p.Item1, p.Item2);
+				AddOrReplacePiece(peice, p.Item1, p.Item2);
 			});
 			Pawn.PossibleStartingPositions(PieceColor.White).ToList().ForEach(p =>
 			{
 				var peice = new Pawn(PieceColor.White, this);
-				AddPiece(peice, p.Item1, p.Item2);
+				AddOrReplacePiece(peice, p.Item1, p.Item2);
 			});
 		}
 		private void SetupBishops()
@@ -229,12 +225,12 @@ namespace Chess.Domain
 			Bishop.PossibleStartingPositions(PieceColor.Black).ToList().ForEach(p =>
 			{
 				var peice = new Bishop(PieceColor.Black, this);
-				AddPiece(peice, p.Item1, p.Item2);
+				AddOrReplacePiece(peice, p.Item1, p.Item2);
 			});
 			Bishop.PossibleStartingPositions(PieceColor.White).ToList().ForEach(p =>
 			{
 				var peice = new Bishop(PieceColor.White, this);
-				AddPiece(peice, p.Item1, p.Item2);
+				AddOrReplacePiece(peice, p.Item1, p.Item2);
 			});
 		}
 		private void SetupRooks()
@@ -242,12 +238,12 @@ namespace Chess.Domain
 			Rook.PossibleStartingPositions(PieceColor.Black).ToList().ForEach(p =>
 			{
 				var peice = new Rook(PieceColor.Black, this);
-				AddPiece(peice, p.Item1, p.Item2);
+				AddOrReplacePiece(peice, p.Item1, p.Item2);
 			});
 			Rook.PossibleStartingPositions(PieceColor.White).ToList().ForEach(p =>
 			{
 				var peice = new Rook(PieceColor.White, this);
-				AddPiece(peice, p.Item1, p.Item2);
+				AddOrReplacePiece(peice, p.Item1, p.Item2);
 			});
 		}
 
@@ -256,12 +252,12 @@ namespace Chess.Domain
 			Queen.PossibleStartingPositions(PieceColor.Black).ToList().ForEach(p =>
 			{
 				var peice = new Queen(PieceColor.Black, this);
-				AddPiece(peice, p.Item1, p.Item2);
+				AddOrReplacePiece(peice, p.Item1, p.Item2);
 			});
 			Queen.PossibleStartingPositions(PieceColor.White).ToList().ForEach(p =>
 			{
 				var peice = new Queen(PieceColor.White, this);
-				AddPiece(peice, p.Item1, p.Item2);
+				AddOrReplacePiece(peice, p.Item1, p.Item2);
 			});
 		}
 
@@ -270,12 +266,12 @@ namespace Chess.Domain
 			King.PossibleStartingPositions(PieceColor.Black).ToList().ForEach(p =>
 			{
 				var peice = new King(PieceColor.Black, this);
-				AddPiece(peice, p.Item1, p.Item2);
+				AddOrReplacePiece(peice, p.Item1, p.Item2);
 			});
 			King.PossibleStartingPositions(PieceColor.White).ToList().ForEach(p =>
 			{
 				var peice = new King(PieceColor.White, this);
-				AddPiece(peice, p.Item1, p.Item2);
+				AddOrReplacePiece(peice, p.Item1, p.Item2);
 			});
 		}
 
@@ -284,12 +280,12 @@ namespace Chess.Domain
 			Knight.PossibleStartingPositions(PieceColor.Black).ToList().ForEach(p =>
 			{
 				var peice = new Knight(PieceColor.Black, this);
-				AddPiece(peice, p.Item1, p.Item2);
+				AddOrReplacePiece(peice, p.Item1, p.Item2);
 			});
 			Knight.PossibleStartingPositions(PieceColor.White).ToList().ForEach(p =>
 			{
 				var peice = new Knight(PieceColor.White, this);
-				AddPiece(peice, p.Item1, p.Item2);
+				AddOrReplacePiece(peice, p.Item1, p.Item2);
 			});
 		}
 
