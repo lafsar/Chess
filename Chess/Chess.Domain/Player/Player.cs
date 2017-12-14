@@ -7,6 +7,7 @@ namespace Chess.Domain
 {
 	/// <summary>
 	/// Players must subscribe to a ChessGame in order to start playing
+	/// TODO: keep track of score, but I'm not familiar enough with the pointing system in chess
 	/// </summary>
 	public abstract class Player
 	{

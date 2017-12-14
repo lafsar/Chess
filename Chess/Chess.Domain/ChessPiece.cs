@@ -28,6 +28,7 @@ namespace Chess.Domain
 					: PieceColor.Black;
 			}
 		}
+		//TODO: inject optional Player instance to keep track of the current player turn
 		protected ChessPiece(PieceColor pieceColor, ChessBoard board)
 		{
 			PieceColor = pieceColor;
@@ -54,9 +55,6 @@ namespace Chess.Domain
 				BeforeMove(destination);
 				ChessBoard.RemovePiece(Row, Column);
 				SetPosition(row, column);
-				if (PieceColor == PieceColor.Black) {
-					Console.WriteLine("actual: " + Row + "-" + Column);
-				}
 				HandleCapture(destination);
 				MoveCount++;
 				ChessBoard.AddOrReplacePiece(this, destination.Item1, destination.Item2);
@@ -77,10 +75,7 @@ namespace Chess.Domain
 
 		protected virtual void HandleCapture(Tuple<int, int> destination)
 		{
-			//if (ChessBoard.GetPiece(destination.Item1, destination.Item2) != null)
-			//{
-			//	ChessBoard.RemovePiece(destination.Item1, destination.Item2);
-			//}
+			//Most pieces will auto-replace the enemy piece when moving to an occupied location, but pawns are special.
 		}
 	}
 }

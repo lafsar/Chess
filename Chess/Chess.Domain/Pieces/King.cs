@@ -23,12 +23,12 @@ namespace Chess.Domain
 				yield return new Tuple<int, int>(ChessConstants.MAX_BOARD_ROWS - 1, 4);
 			}
 		}
-
+		//TODO: What determines a stalemate vs checkmate?
 		public bool IsCheckMated()
 		{
 			return IsInCheck && !(MoveStrategy as KingMoveStrategy).GetMoveSet(Row, Column, OpposingColor).Any() && !CanDefendTheKing();
 		}
-
+		
 		private bool CanDefendTheKing()
 		{
 			var locations = PieceColor == PieceColor.Black

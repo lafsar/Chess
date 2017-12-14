@@ -10,6 +10,7 @@ namespace Chess.Domain
 		public FirstPlayer Player1 { get; set; }
 		public SecondPlayer Player2 { get; set; }
 		public ChessBoard ChessBoard { get; set; }
+		//TODO: Chessgame declares draw if turncount = 50 or report the highest score
 		public int TurnCount { get; set; }
 		private bool _isGameStarted { get; set; }
 		public void GiveNextTurn(Player NextPlayer)

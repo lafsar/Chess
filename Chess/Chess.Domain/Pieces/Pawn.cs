@@ -26,7 +26,7 @@ namespace Chess.Domain
 					|| (Direction == -1 && Row == 0);
 			}
 		}
-
+		
 		public Pawn(PieceColor color, ChessBoard board)
 			: base(color, board)
 		{

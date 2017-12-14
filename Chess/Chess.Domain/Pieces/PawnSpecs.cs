@@ -100,7 +100,7 @@ namespace Chess.Domain
         }
 
         [Test]
-        public void _10_making_an_illegal_move_by_placing_the_black_pawn_on_Row_equals_1_and_Column_eqauls_3_and_moving_to_Row_equals_2_and_Column_eqauls_3_should_not_move_the_pawn()
+        public void _black_pawn_blocked_by_another_black_pawn()
         {
 			//Pawn cant move to occupied space when moving forward
 			_chessBoard.AddOrReplacePiece(_pawn, 1, 3);
@@ -176,6 +176,7 @@ namespace Chess.Domain
         [Test]
         public void _10_white_pawn_en_passant_to_2_2()
         {
+			//Black pawn must move double on the first move for white to en-passant
 			_chessBoard.AddOrReplacePiece(_pawn2, 1, 2);
 			_pawn2.Move(3, 2);
 			_chessBoard.AddOrReplacePiece(_pawn1, 3, 3);
