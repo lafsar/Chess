@@ -128,20 +128,14 @@ namespace Chess.Domain
 			if (piece.PieceColor == PieceColor.White)
 			{
 				var opposingColor = PieceColor.Black;
-				
 				WhiteMoveLocations.AddRange(piece.MoveStrategy.GetMoveSet(row, col, opposingColor).ToList());
-				
-				WhiteCapturableLocations.AddRange(piece.MoveStrategy.GetCapturable().ToList());
-				//piece.MoveStrategy.GetCapturable().ToList().ForEach(i=>
-				//{
-				//	Console.WriteLine("waa: " + i.Item1 + "," + i.Item2);
-				//});
+				WhiteCapturableLocations.AddRange(piece.MoveStrategy.GetCapturable());
 			}
 			else
 			{
 				var opposingColor = PieceColor.White;
 				WhiteMoveLocations.AddRange(piece.MoveStrategy.GetMoveSet(row, col, opposingColor).ToList());
-				WhiteCapturableLocations.AddRange(piece.MoveStrategy.GetCapturable().ToList());
+				WhiteCapturableLocations.AddRange(piece.MoveStrategy.GetCapturable());
 			}
 		}
 
@@ -225,20 +219,24 @@ namespace Chess.Domain
 		/// </returns>
 		public bool CastleKing(PieceColor color, int direction)
 		{
-			var requiredKing = color == PieceColor.Black
-				? GetPiece(0, 4)
-				: GetPiece(ChessConstants.MAX_BOARD_ROWS - 1, 4);
+			var currentRow = color == PieceColor.Black
+				? 0
+				: ChessConstants.MAX_BOARD_ROWS - 1;
+			var requiredKing = GetPiece(currentRow, 4);
 
-			var isKing = requiredKing != null && requiredKing.GetType().ToString() == "King" && requiredKing.MoveCount == 0 && !(requiredKing as King).IsInCheck;
+			var hasKing = requiredKing != null && requiredKing.GetType().ToString() == "King" && requiredKing.MoveCount == 0 && !(requiredKing as King).IsInCheck;
 			var directionColumn = direction == 1
 				? ChessConstants.MAX_BOARD_COLUMNS - 1
 				: 0;
 			var requiredRook = color == PieceColor.Black
 				? GetPiece(0, directionColumn)
 				: GetPiece(ChessConstants.MAX_BOARD_ROWS - 1, directionColumn);
-			var isRook = requiredRook != null && requiredRook.GetType().ToString() == "Rook" && requiredRook.MoveCount == 0;
-			//var hasNoBlocks = dire
-			return false;
+			var hasRook = requiredRook != null && requiredRook.GetType().ToString() == "Rook" && requiredRook.MoveCount == 0;
+			var hasNoBlocks = direction == 1
+				? GetPiece(currentRow, 5) == null && GetPiece(currentRow, 6) == null
+				: GetPiece(currentRow, 1) == null && GetPiece(currentRow, 2) == null && GetPiece(currentRow, 3) == null;
+			var destination = new Tuple<int, int>(currentRow, directionColumn);
+			return hasKing && hasRook && hasNoBlocks && !IsCheckedState(requiredKing, destination);
 		}
 
 		private bool SwitchPiece(ChessPiece oldPiece, ChessPiece newPiece)
