@@ -21,7 +21,10 @@ namespace Chess.Domain
 		{
 			return ChessBoard.IsLegalBoardPosition(move.Item1, move.Item2) && !IsLocationBlocked(move);
 		}
-
+		public override List<Tuple<int, int>> GetCapturable()
+		{
+			return base.GetCapturable();
+		}
 		public List<Tuple<int, int>> AllKnightMoves
 		{
 			get

@@ -28,6 +28,11 @@ namespace Chess.Domain
 			return isLegal && positionAvailable;
 		}
 
+		public override List<Tuple<int, int>> GetCapturable()
+		{
+			return base.GetCapturable();
+		}
+
 		public List<Tuple<int, int>> AllKingMoves
 		{
 			get

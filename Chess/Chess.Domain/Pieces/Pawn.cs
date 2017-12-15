@@ -51,25 +51,30 @@ namespace Chess.Domain
 				}
 			}
 		}
-		protected override void BeforeMove(Tuple<int, int> destination)
+		public override void BeforeMove(Tuple<int, int> destination)
 		{
 			HasMovedDouble = MoveCount == 0 && destination.Equals((MoveStrategy as PawnAdapterStrategy).DoubleForward);
 		}
 
-		protected override void AfterMove()
+		public override void AfterMove()
 		{
-			var destination = new Tuple<int, int>(Row, Column);
+			//This is to make sure that pawn cant move double again
 			MoveStrategy = new PawnAdapterStrategy(MoveCount, Direction, ChessBoard);
 		}
-
-		protected override void HandleCapture(Tuple<int, int> destination)
+		/// <summary>
+		/// Specifically For en-passant 
+		/// (need to remove the pawn which is currently in the opposite direction)
+		/// </summary>
+		/// <param name="destination"></param>
+		public override void HandleCapture(Tuple<int, int> destination)
 		{
 			if ((destination.Equals((MoveStrategy as PawnAdapterStrategy).DiagonalLeft) || destination.Equals((MoveStrategy as PawnAdapterStrategy).DiagonalRight))
 				&& ChessBoard.GetPiece(destination.Item1, destination.Item2) == null)
 			{
-				//For en-passant (need to remove the pawn which is currently in the opposite direction)
-				ChessBoard.RemovePiece(destination.Item1 + (Direction * -1), destination.Item2);
+				
+				ChessBoard.Remove(destination.Item1 + (Direction * -1), destination.Item2);
 			}
 		}
+		public override void Accept(IChessPieceVisitor visitor) { visitor.Visit(this); }
 	}
 }

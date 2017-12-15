@@ -4,19 +4,19 @@ using System.Linq;
 
 namespace Chess.Domain
 {
-    public class ChessBoard
+    public class ChessBoard : IChessPieceVisitor
     {
-        private ChessPiece[,] _instance;
+        private ChessPiece[,] _boardInstance;
 
 		private ChessPiece[,] Board
         {
             get
             {
-                if (_instance == null)
+                if (_boardInstance == null)
                 {
-                    _instance = new ChessPiece[ChessConstants.MAX_BOARD_ROWS, ChessConstants.MAX_BOARD_COLUMNS];
+                    _boardInstance = new ChessPiece[ChessConstants.MAX_BOARD_ROWS, ChessConstants.MAX_BOARD_COLUMNS];
                 }
-                return _instance;
+                return _boardInstance;
             }
         }
 
@@ -30,7 +30,7 @@ namespace Chess.Domain
 		public King BlackKing { get; private set; }
 		public King WhiteKing{ get; private set; }
 
-		public void UpdateBoardState(Tuple<int, int> destination = null)
+		public void UpdateBoardState()
 		{
 			BlackCapturableLocations = new List<Tuple<int, int>>();
 			BlackMoveLocations = new List<Tuple<int, int>>();
@@ -41,22 +41,17 @@ namespace Chess.Domain
 				for (var j = 0; j < Board.GetLength(1); j++)
 				{
 					var piece = GetPiece(i, j);
-					Console.WriteLine("("+i+","+j+")");
 					if (piece != null)
 					{
-						var type = piece.GetType().ToString();
 						var opposingColor = piece.PieceColor == PieceColor.Black
 							? PieceColor.White
 							: PieceColor.Black;
 
-						var row = destination != null
-							? destination.Item1
-							: piece.Row;
+						var row = piece.Row;
 
-						var col = destination != null
-							? destination.Item2
-							: piece.Column;
-						switch (type)
+						var col = piece.Column;
+						piece.Accept(this);
+						switch (PieceType)
 						{
 							case "Pawn":
 								piece.MoveStrategy = new PawnAdapterStrategy(piece.MoveCount, (piece as Pawn).Direction, this);
@@ -74,7 +69,6 @@ namespace Chess.Domain
 								piece.MoveStrategy = new QueenMoveStrategy(this);
 								break;
 							case "King":
-								Console.WriteLine("found king");
 								piece.MoveStrategy = new KingMoveStrategy(this);
 								if (piece.PieceColor == PieceColor.White)
 								{
@@ -88,8 +82,7 @@ namespace Chess.Domain
 								break;
 					
 						}
-						piece.MoveStrategy.GetMoveSet(row, col, opposingColor);
-						AddLocations(piece.PieceColor, piece.MoveStrategy);
+						AddLocations(piece, row, col);
 					}
 				}
 			}
@@ -99,21 +92,56 @@ namespace Chess.Domain
 			}
 			if (BlackKing != null)
 			{
-				Console.WriteLine(WhiteCapturableLocations.ToList());
 				BlackKing.IsInCheck = WhiteCapturableLocations.Contains(new Tuple<int, int>(BlackKing.Row, BlackKing.Column));
 			}
 		}
 
-		private void AddLocations(PieceColor color, IMoveStrategy strategy)
+		public bool IsCheckedState(ChessPiece piece, Tuple<int,int> destination)
 		{
-			if (color == PieceColor.White)
+			var willBeChecked = false;
+			//Check to see if next move will put us in check
+			if (BlackKing != null && WhiteKing != null)
 			{
-				WhiteMoveLocations = strategy.GetAllMoves();
-				WhiteCapturableLocations = strategy.GetCapturable();
-			} else
+				var oldBoard = Board;
+				var oldRow = piece.Row;
+				var oldCol = piece.Column;
+				piece.BeforeMove(destination);
+				Remove(oldRow, oldCol);
+				piece.HandleCapture(destination);
+				piece.MoveCount++;
+				piece.AfterMove();
+				AddReplace(piece, destination.Item1, destination.Item2);
+				willBeChecked = piece.PieceColor == PieceColor.Black
+					? BlackKing.IsInCheck
+					: WhiteKing.IsInCheck;
+				//Reset state back to what it was
+				ResetBoard(oldBoard);
+				piece.SetPosition(oldRow, oldCol);
+				piece.MoveCount--;
+				UpdateBoardState();
+			}
+			return willBeChecked;
+		}
+
+		private void AddLocations(ChessPiece piece, int row, int col)
+		{
+			if (piece.PieceColor == PieceColor.White)
 			{
-				BlackCapturableLocations = strategy.GetCapturable();
-				BlackMoveLocations = strategy.GetAllMoves();
+				var opposingColor = PieceColor.Black;
+				
+				WhiteMoveLocations.AddRange(piece.MoveStrategy.GetMoveSet(row, col, opposingColor).ToList());
+				
+				WhiteCapturableLocations.AddRange(piece.MoveStrategy.GetCapturable().ToList());
+				//piece.MoveStrategy.GetCapturable().ToList().ForEach(i=>
+				//{
+				//	Console.WriteLine("waa: " + i.Item1 + "," + i.Item2);
+				//});
+			}
+			else
+			{
+				var opposingColor = PieceColor.White;
+				WhiteMoveLocations.AddRange(piece.MoveStrategy.GetMoveSet(row, col, opposingColor).ToList());
+				WhiteCapturableLocations.AddRange(piece.MoveStrategy.GetCapturable().ToList());
 			}
 		}
 
@@ -124,17 +152,22 @@ namespace Chess.Domain
 				: null;
 		}
 
-		public void AddOrReplacePiece(ChessPiece piece, int row, int column)
+		public void AddReplace(ChessPiece piece, int row, int column)
 		{
-			Board[row, column] = piece;
-			piece.SetPosition(row, column);
-			UpdateBoardState();
+			if (IsLegalBoardPosition(row, column)) {
+				Board[row, column] = piece;
+				piece.SetPosition(row, column);
+				UpdateBoardState();
+			}
 		}
 
-		public void RemovePiece(int row, int column)
+		public void Remove(int row, int column)
 		{
-			Board[row, column] = null;
-			//UpdateBoardState();
+			if (IsLegalBoardPosition(row, column))
+			{
+				Board[row, column] = null;
+				//UpdateBoardState();
+			}
 		}
 
 		public bool IsLegalBoardPosition(int row, int column)
@@ -142,11 +175,9 @@ namespace Chess.Domain
             return row >= 0 && column >= 0 && row < ChessConstants.MAX_BOARD_ROWS && column < ChessConstants.MAX_BOARD_COLUMNS;
         }
 
-		public void ResetBoard()
+		public void ResetBoard(ChessPiece[,] oldBoard = null)
 		{
-			if (_instance != null) { 
-				_instance = new ChessPiece[ChessConstants.MAX_BOARD_ROWS - 1, ChessConstants.MAX_BOARD_COLUMNS - 1];
-			}
+			_boardInstance = oldBoard ?? new ChessPiece[ChessConstants.MAX_BOARD_ROWS, ChessConstants.MAX_BOARD_COLUMNS];
 		}
 
 		public bool PromotePawn(int row, int col, PieceColor color, string type)
@@ -159,7 +190,8 @@ namespace Chess.Domain
 			bool hasPromoted = false;
 			if (piece != null && row == requiredRow && piece.PieceColor == color && piece.GetType() == typeof(Pawn))
 			{
-				switch (type) {
+				piece.Accept(this);
+				switch (PieceType) {
 					case "Queen":
 						newPiece = new Queen(color, this);
 						hasPromoted = SwitchPiece(piece, newPiece);
@@ -211,7 +243,7 @@ namespace Chess.Domain
 
 		private bool SwitchPiece(ChessPiece oldPiece, ChessPiece newPiece)
 		{
-			AddOrReplacePiece(newPiece, oldPiece.Row, oldPiece.Column);
+			AddReplace(newPiece, oldPiece.Row, oldPiece.Column);
 			return true;
 		}
 
@@ -220,12 +252,12 @@ namespace Chess.Domain
 			Pawn.PossibleStartingPositions(PieceColor.Black).ToList().ForEach(p =>
 			{
 				var peice = new Pawn(PieceColor.Black, this);
-				AddOrReplacePiece(peice, p.Item1, p.Item2);
+				AddReplace(peice, p.Item1, p.Item2);
 			});
 			Pawn.PossibleStartingPositions(PieceColor.White).ToList().ForEach(p =>
 			{
 				var peice = new Pawn(PieceColor.White, this);
-				AddOrReplacePiece(peice, p.Item1, p.Item2);
+				AddReplace(peice, p.Item1, p.Item2);
 			});
 		}
 		private void SetupBishops()
@@ -233,12 +265,12 @@ namespace Chess.Domain
 			Bishop.PossibleStartingPositions(PieceColor.Black).ToList().ForEach(p =>
 			{
 				var peice = new Bishop(PieceColor.Black, this);
-				AddOrReplacePiece(peice, p.Item1, p.Item2);
+				AddReplace(peice, p.Item1, p.Item2);
 			});
 			Bishop.PossibleStartingPositions(PieceColor.White).ToList().ForEach(p =>
 			{
 				var peice = new Bishop(PieceColor.White, this);
-				AddOrReplacePiece(peice, p.Item1, p.Item2);
+				AddReplace(peice, p.Item1, p.Item2);
 			});
 		}
 		private void SetupRooks()
@@ -246,12 +278,12 @@ namespace Chess.Domain
 			Rook.PossibleStartingPositions(PieceColor.Black).ToList().ForEach(p =>
 			{
 				var peice = new Rook(PieceColor.Black, this);
-				AddOrReplacePiece(peice, p.Item1, p.Item2);
+				AddReplace(peice, p.Item1, p.Item2);
 			});
 			Rook.PossibleStartingPositions(PieceColor.White).ToList().ForEach(p =>
 			{
 				var peice = new Rook(PieceColor.White, this);
-				AddOrReplacePiece(peice, p.Item1, p.Item2);
+				AddReplace(peice, p.Item1, p.Item2);
 			});
 		}
 
@@ -260,12 +292,12 @@ namespace Chess.Domain
 			Queen.PossibleStartingPositions(PieceColor.Black).ToList().ForEach(p =>
 			{
 				var peice = new Queen(PieceColor.Black, this);
-				AddOrReplacePiece(peice, p.Item1, p.Item2);
+				AddReplace(peice, p.Item1, p.Item2);
 			});
 			Queen.PossibleStartingPositions(PieceColor.White).ToList().ForEach(p =>
 			{
 				var peice = new Queen(PieceColor.White, this);
-				AddOrReplacePiece(peice, p.Item1, p.Item2);
+				AddReplace(peice, p.Item1, p.Item2);
 			});
 		}
 
@@ -274,12 +306,12 @@ namespace Chess.Domain
 			King.PossibleStartingPositions(PieceColor.Black).ToList().ForEach(p =>
 			{
 				var peice = new King(PieceColor.Black, this);
-				AddOrReplacePiece(peice, p.Item1, p.Item2);
+				AddReplace(peice, p.Item1, p.Item2);
 			});
 			King.PossibleStartingPositions(PieceColor.White).ToList().ForEach(p =>
 			{
 				var peice = new King(PieceColor.White, this);
-				AddOrReplacePiece(peice, p.Item1, p.Item2);
+				AddReplace(peice, p.Item1, p.Item2);
 			});
 		}
 
@@ -288,12 +320,12 @@ namespace Chess.Domain
 			Knight.PossibleStartingPositions(PieceColor.Black).ToList().ForEach(p =>
 			{
 				var peice = new Knight(PieceColor.Black, this);
-				AddOrReplacePiece(peice, p.Item1, p.Item2);
+				AddReplace(peice, p.Item1, p.Item2);
 			});
 			Knight.PossibleStartingPositions(PieceColor.White).ToList().ForEach(p =>
 			{
 				var peice = new Knight(PieceColor.White, this);
-				AddOrReplacePiece(peice, p.Item1, p.Item2);
+				AddReplace(peice, p.Item1, p.Item2);
 			});
 		}
 
@@ -305,6 +337,33 @@ namespace Chess.Domain
 			SetupBishops();
 			SetupQueens();
 			SetupKings();
+		}
+
+		private string PieceType;
+
+		public void Visit(Pawn pawn)
+		{
+			PieceType = "Pawn";
+		}
+		public void Visit(Rook rook)
+		{
+			PieceType = "Rook";
+		}
+		public void Visit(Knight knight)
+		{
+			PieceType = "Knight";
+		}
+		public void Visit(Bishop bishop)
+		{
+			PieceType = "Bishop";
+		}
+		public void Visit(Queen queen)
+		{
+			PieceType = "Queen";
+		}
+		public void Visit(King king)
+		{
+			PieceType = "King";
 		}
 	}
 }

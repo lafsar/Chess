@@ -19,22 +19,19 @@ namespace Chess.Domain
 		}
 		public override IEnumerable<Tuple<int, int>> GetMoveSet(int row, int col, PieceColor opposingPlayer)
 		{
-			//base.GetMoveSet(row, col, opposingPlayer);
-
 			var strats = DiagonalStrategies.GetMoveSet(row, col, opposingPlayer)
 				.Concat(RowStrategies.GetMoveSet(row, col, opposingPlayer))
-				.Concat(ColumnStrategies.GetMoveSet(row, col, opposingPlayer));
-
-			CaptureableLocation = new List<Tuple<int, int>>();
-			CaptureableLocation.AddRange(DiagonalStrategies.CaptureableLocation);
-			CaptureableLocation.AddRange(RowStrategies.CaptureableLocation);
-			CaptureableLocation.AddRange(ColumnStrategies.CaptureableLocation);
-
-			AllPossibleMoveLocations.AddRange(DiagonalStrategies.AllPossibleMoveLocations);
-			AllPossibleMoveLocations.AddRange(RowStrategies.AllPossibleMoveLocations);
-			AllPossibleMoveLocations.AddRange(ColumnStrategies.AllPossibleMoveLocations);
+				.Concat(ColumnStrategies.GetMoveSet(row, col, opposingPlayer)).ToList();
 
 			return strats;
+		}
+
+		public override List<Tuple<int, int>> GetCapturable()
+		{
+			var captures = DiagonalStrategies.GetCapturable()
+				.Concat(RowStrategies.GetCapturable())
+				.Concat(ColumnStrategies.GetCapturable()).ToList();
+			return captures;
 		}
 	}
 }

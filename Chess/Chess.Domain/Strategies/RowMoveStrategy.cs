@@ -13,6 +13,10 @@ namespace Chess.Domain
 			base.GetMoveSet(row, col, opposingPlayer);
 			return AllRowMoves;
 		}
+		public override List<Tuple<int, int>> GetCapturable()
+		{
+			return base.GetCapturable();
+		}
 
 		public IEnumerable<Tuple<int, int>> AllRowMoves
 		{
@@ -41,9 +45,9 @@ namespace Chess.Domain
 
 		protected IEnumerable<Tuple<int, int>> RowDirections(int rowDir)
 		{
-			for (int i = 1, nextRow = NextPosition(CurrentRow, i, rowDir);
-					ChessBoard.IsLegalBoardPosition(nextRow, CurrentColumn) && !IsLocationBlocked(nextRow, CurrentColumn);
-					i++, nextRow = NextPosition(CurrentRow, i, rowDir))
+			for (int i = 1, nextRow = NextPosition(CurrentRow, i, rowDir);//var declarations
+					ChessBoard.IsLegalBoardPosition(nextRow, CurrentColumn) && !IsLocationBlocked(nextRow, CurrentColumn);//terminating conditions
+					i++, nextRow = NextPosition(CurrentRow, i, rowDir))//iterators
 			{
 				var nextLocation = new Tuple<int, int>(nextRow, CurrentColumn);
 				yield return nextLocation;

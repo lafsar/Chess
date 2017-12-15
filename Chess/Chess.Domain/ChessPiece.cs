@@ -9,9 +9,9 @@ namespace Chess.Domain
 	/// </summary>
     public abstract class ChessPiece : Positionable
     {
-		public IMoveStrategy MoveStrategy { get; set; }
+		public BaseMoveStrategy MoveStrategy { get; set; }
         private PieceColor _pieceColor;
-		public int MoveCount { get; protected set; }
+		public int MoveCount { get; set; }
 		protected ChessBoard ChessBoard;
 		public PieceColor PieceColor
         {
@@ -28,7 +28,7 @@ namespace Chess.Domain
 					: PieceColor.Black;
 			}
 		}
-		//TODO: inject optional Player instance to keep track of the current player turn
+		//TODO: inject optional Player instance to keep track of the current player score
 		protected ChessPiece(PieceColor pieceColor, ChessBoard board)
 		{
 			PieceColor = pieceColor;
@@ -39,41 +39,34 @@ namespace Chess.Domain
 		{
 			var destination = new Tuple<int, int>(row, column);
 			var origin = new Tuple<int, int>(Row, Column);
-			var canMove = MoveStrategy.GetMoveSet(Row, Column, OpposingColor).Any(t => t.Equals(destination));
-			var willBeChecked = false;
-			//Check to see if next move will put us in check
-			if (ChessBoard.BlackKing != null && ChessBoard.WhiteKing != null) { 	
-				ChessBoard.UpdateBoardState(destination);
-				willBeChecked = PieceColor == PieceColor.Black
-					? ChessBoard.BlackKing.IsInCheck
-					: ChessBoard.WhiteKing.IsInCheck;
-				//Reset state back to what it was
-				ChessBoard.UpdateBoardState(origin);
-			}
-			if (canMove && !willBeChecked)
+			var canMove = !destination.Equals(origin) 
+				&& MoveStrategy.GetMoveSet(Row, Column, OpposingColor).Any(t => t.Equals(destination));
+			
+			if (canMove && !ChessBoard.IsCheckedState(this, destination))
 			{
 				BeforeMove(destination);
-				ChessBoard.RemovePiece(Row, Column);
-				SetPosition(row, column);
+				ChessBoard.Remove(Row, Column);
 				HandleCapture(destination);
 				MoveCount++;
-				ChessBoard.AddOrReplacePiece(this, destination.Item1, destination.Item2);
 				AfterMove();
+				ChessBoard.AddReplace(this, destination.Item1, destination.Item2);
 			}
 			return canMove;
 		}
 
-		protected virtual void BeforeMove(Tuple<int, int> destination) {}
-		protected virtual void AfterMove() {
+		public virtual void BeforeMove(Tuple<int, int> destination) {}
+		public virtual void AfterMove() {
 			
 		}
+
+		public abstract void Accept(IChessPieceVisitor visitor);
 
         public override string ToString()
         {
             return CurrentPositionAsString();
         }
 
-		protected virtual void HandleCapture(Tuple<int, int> destination)
+		public virtual void HandleCapture(Tuple<int, int> destination)
 		{
 			//Most pieces will auto-replace the enemy piece when moving to an occupied location, but pawns are special.
 		}

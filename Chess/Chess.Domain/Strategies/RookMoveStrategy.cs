@@ -20,15 +20,16 @@ namespace Chess.Domain
 			//base.GetMoveSet(row, col, opposingPlayer);
 
 			var strats = RowStrategies.GetMoveSet(row, col, opposingPlayer)
-				.Concat(ColumnStrategies.GetMoveSet(row, col, opposingPlayer));
-
-			CaptureableLocation = new List<Tuple<int, int>>();
-			CaptureableLocation.AddRange(RowStrategies.CaptureableLocation);
-			CaptureableLocation.AddRange(ColumnStrategies.CaptureableLocation);
-			AllPossibleMoveLocations.AddRange(RowStrategies.AllPossibleMoveLocations);
-			AllPossibleMoveLocations.AddRange(ColumnStrategies.AllPossibleMoveLocations);
+				.Concat(ColumnStrategies.GetMoveSet(row, col, opposingPlayer)).ToList();
 
 			return strats;
+		}
+
+		public override List<Tuple<int, int>> GetCapturable()
+		{
+			return RowStrategies.GetCapturable()
+				.Concat(ColumnStrategies.GetCapturable())
+				.ToList();
 		}
 	}
 }

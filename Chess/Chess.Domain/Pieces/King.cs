@@ -28,21 +28,26 @@ namespace Chess.Domain
 		{
 			return IsInCheck && !(MoveStrategy as KingMoveStrategy).GetMoveSet(Row, Column, OpposingColor).Any() && !CanDefendTheKing();
 		}
-		
+		/// <summary>
+		/// Checks all possible moves for the current player to see if the subject can defend their king
+		/// </summary>
+		/// <returns></returns>
 		private bool CanDefendTheKing()
 		{
-			var locations = PieceColor == PieceColor.Black
-				? ChessBoard.BlackMoveLocations
-				: ChessBoard.WhiteMoveLocations;
+			//var locations = PieceColor == PieceColor.Black
+			//	? ChessBoard.BlackMoveLocations
+			//	: ChessBoard.WhiteMoveLocations;
 
-			return locations.Exists(l =>
-			{
-				ChessBoard.UpdateBoardState(l);
-				var king = PieceColor == PieceColor.Black
-					? ChessBoard.BlackKing
-					: ChessBoard.WhiteKing;
-				return !king.IsInCheck;
-			});
+			//return locations.Exists(l =>
+			//{
+			//	ChessBoard.UpdateBoardState();
+			//	var king = PieceColor == PieceColor.Black
+			//		? ChessBoard.BlackKing
+			//		: ChessBoard.WhiteKing;
+			//	return !king.IsInCheck;
+			//});
+			return true;
 		}
+		public override void Accept(IChessPieceVisitor visitor) { visitor.Visit(this); }
 	}
 }

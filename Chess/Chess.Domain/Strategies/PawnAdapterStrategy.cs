@@ -18,9 +18,13 @@ namespace Chess.Domain
 		public override IEnumerable<Tuple<int, int>> GetMoveSet(int row, int col, PieceColor opposingPlayer)
 		{
 			base.GetMoveSet(row, col, opposingPlayer);
-			
-			var allPawnMoves = PawnAdvanceMoves().Concat(PawnCaptureMoves());			
+			var allPawnMoves = PawnAdvanceMoves().Concat(GetCapturable()).ToList();			
 			return allPawnMoves;
+		}
+
+		public override List<Tuple<int, int>> GetCapturable()
+		{
+			return PawnCaptureMoves().ToList();
 		}
 
 		public Tuple<int, int> DiagonalLeft
@@ -53,19 +57,16 @@ namespace Chess.Domain
 			var isNextNextRowOccupied = ChessBoard.GetPiece(DoubleForward.Item1, CurrentColumn) != null;
 			if (!isNextRowOccupied)
 			{
-				AllPossibleMoveLocations.Add(new Tuple<int, int>(CurrentRow + Direction, CurrentColumn));
 				yield return new Tuple<int, int>(CurrentRow + Direction, CurrentColumn);
 			}
 			if (MoveCount == 0 && !isNextRowOccupied && !isNextNextRowOccupied)
 			{
-				AllPossibleMoveLocations.Add(new Tuple<int, int>(DoubleForward.Item1, CurrentColumn));
 				yield return new Tuple<int, int>(DoubleForward.Item1, CurrentColumn);
 			}
 		}
 
 		public IEnumerable<Tuple<int, int>> PawnCaptureMoves()
 		{
-			CaptureableLocation = new List<Tuple<int, int>>();
 			var isDiagRightCapturable = ChessBoard.GetPiece(DiagonalRight.Item1, DiagonalRight.Item2) != null
 				&& ChessBoard.GetPiece(DiagonalRight.Item1, DiagonalRight.Item2).PieceColor == OpposingColor;
 
@@ -82,21 +83,20 @@ namespace Chess.Domain
 
 			if (isDiagRightCapturable || isDiagRightPassantable)
 			{
-				CaptureableLocation.Add(DiagonalRight);
 				yield return DiagonalRight;
 			}
 			if (isDiagLeftCapturable || isDiagLeftPassantable)
 			{
-				CaptureableLocation.Add(DiagonalLeft);
 				yield return DiagonalLeft;
 			}
 		}
 
 		private bool DeterminePassantable(Tuple<int, int> attackDirection, ChessPiece adjacentEnemy)
 		{
-			var isPassantable = (adjacentEnemy as Pawn) != null && ChessBoard.GetPiece(attackDirection.Item1, attackDirection.Item2) == null
-				&& adjacentEnemy.PieceColor == OpposingColor && (adjacentEnemy as Pawn).MoveCount == 1
-				&& (adjacentEnemy as Pawn).HasMovedDouble;			
+			var coercedEnemyPawn = (adjacentEnemy as Pawn);
+			var isPassantable = coercedEnemyPawn != null && ChessBoard.GetPiece(attackDirection.Item1, attackDirection.Item2) == null
+				&& adjacentEnemy.PieceColor == OpposingColor && coercedEnemyPawn.MoveCount == 1
+				&& coercedEnemyPawn.HasMovedDouble;			
 			return isPassantable;
 		}
 	}

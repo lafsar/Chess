@@ -23,5 +23,6 @@ namespace Chess.Domain
 				yield return new Tuple<int, int>(ChessConstants.MAX_BOARD_ROWS - 1, 5);
 			}
 		}
+		public override void Accept(IChessPieceVisitor visitor) { visitor.Visit(this); }
 	}
 }

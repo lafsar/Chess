@@ -10,13 +10,11 @@ namespace Chess.Domain
 		protected int CurrentRow { get; private set; }
 		protected int CurrentColumn { get; private set; }
 		protected PieceColor OpposingColor { get; private set; }
-		public List<Tuple<int, int>> CaptureableLocation { get; protected set; }
-		public List<Tuple<int, int>> AllPossibleMoveLocations { get; protected set; }
+		public List<Tuple<int, int>> CaptureableLocation { get; private set; }
 		protected ChessBoard ChessBoard;
 		protected BaseMoveStrategy(ChessBoard board)
 		{
 			ChessBoard = board;
-			AllPossibleMoveLocations = new List<Tuple<int, int>>();
 			CaptureableLocation = new List<Tuple<int, int>>();
 		}
 		public virtual IEnumerable<Tuple<int, int>> GetMoveSet(int row, int col, PieceColor opposingPlayer)
@@ -28,14 +26,10 @@ namespace Chess.Domain
 			return new List<Tuple<int, int>>();
 		}
 
-		public List<Tuple<int,int>> GetCapturable()
+		public virtual List<Tuple<int,int>> GetCapturable()
 		{
+			//Console.WriteLine("allmoves");
 			return CaptureableLocation;
-		}
-
-		public List<Tuple<int, int>> GetAllMoves()
-		{
-			return AllPossibleMoveLocations;
 		}
 
 		public bool IsLocationBlocked(int row, int col)
@@ -54,13 +48,10 @@ namespace Chess.Domain
 
 		private void RaiseCapture(int row, int col, ChessPiece boardItem)
 		{
+			//Console.WriteLine("raisecapture" + this.GetType().ToString());
 			if (boardItem != null && boardItem.PieceColor == OpposingColor)
 			{
 				CaptureableLocation.Add(new Tuple<int, int>(row, col));
-			}
-			if (boardItem == null || (boardItem != null && boardItem.PieceColor != OpposingColor))
-			{
-				AllPossibleMoveLocations.Add(new Tuple<int, int>(row, col));
 			}
 		}
 
