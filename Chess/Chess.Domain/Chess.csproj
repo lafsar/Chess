@@ -47,6 +47,7 @@
     <Compile Include="ChessConstants.cs" />
     <Compile Include="Pieces\Bishop.cs" />
     <Compile Include="Pieces\King.cs" />
+    <Compile Include="Pieces\KingSpecs.cs" />
     <Compile Include="Pieces\Knight.cs" />
     <Compile Include="Pieces\Queen.cs" />
     <Compile Include="Pieces\QueenSpecs.cs" />

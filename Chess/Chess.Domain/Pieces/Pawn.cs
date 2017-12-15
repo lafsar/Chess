@@ -5,6 +5,11 @@ using System.Text;
 
 namespace Chess.Domain
 {
+	/// <summary>
+	/// Pawns move in specific directions
+	/// Black moves from top to bottom
+	/// White moves from bottom to top
+	/// </summary>
 	public sealed class Pawn : ChessPiece
 	{
 		public bool HasMovedDouble { get; private set; }

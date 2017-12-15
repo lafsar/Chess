@@ -41,6 +41,7 @@ namespace Chess.Domain
 				for (var j = 0; j < Board.GetLength(1); j++)
 				{
 					var piece = GetPiece(i, j);
+					Console.WriteLine("("+i+","+j+")");
 					if (piece != null)
 					{
 						var type = piece.GetType().ToString();
@@ -55,7 +56,6 @@ namespace Chess.Domain
 						var col = destination != null
 							? destination.Item2
 							: piece.Column;
-
 						switch (type)
 						{
 							case "Pawn":
@@ -74,6 +74,7 @@ namespace Chess.Domain
 								piece.MoveStrategy = new QueenMoveStrategy(this);
 								break;
 							case "King":
+								Console.WriteLine("found king");
 								piece.MoveStrategy = new KingMoveStrategy(this);
 								if (piece.PieceColor == PieceColor.White)
 								{
@@ -98,6 +99,7 @@ namespace Chess.Domain
 			}
 			if (BlackKing != null)
 			{
+				Console.WriteLine(WhiteCapturableLocations.ToList());
 				BlackKing.IsInCheck = WhiteCapturableLocations.Contains(new Tuple<int, int>(BlackKing.Row, BlackKing.Column));
 			}
 		}
@@ -126,7 +128,7 @@ namespace Chess.Domain
 		{
 			Board[row, column] = piece;
 			piece.SetPosition(row, column);
-			//UpdateBoardState();
+			UpdateBoardState();
 		}
 
 		public void RemovePiece(int row, int column)
