@@ -48,8 +48,8 @@ namespace Chess.Domain.Pieces
 			//queen cant move like a knight
 			_chessBoard.AddOrReplacePiece(_queen, 1, 3);
 			_queen.Move(2, 5);
-			Assert.That(_queen.Row, Is.EqualTo(2));
-			Assert.That(_queen.Column, Is.EqualTo(5));
+			Assert.That(_queen.Row, Is.EqualTo(1));
+			Assert.That(_queen.Column, Is.EqualTo(3));
 		}
 
 		[Test]

@@ -41,9 +41,9 @@ namespace Chess.Domain
 
 		protected IEnumerable<Tuple<int, int>> RowDirections(int rowDir)
 		{
-			for (int i = 1, nextRow = CurrentRow + (i * rowDir);
+			for (int i = 1, nextRow = NextPosition(CurrentRow, i, rowDir);
 					ChessBoard.IsLegalBoardPosition(nextRow, CurrentColumn) && !IsLocationBlocked(nextRow, CurrentColumn);
-					i++)
+					i++, nextRow = NextPosition(CurrentRow, i, rowDir))
 			{
 				var nextLocation = new Tuple<int, int>(nextRow, CurrentColumn);
 				yield return nextLocation;

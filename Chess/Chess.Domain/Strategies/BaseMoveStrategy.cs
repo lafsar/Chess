@@ -54,7 +54,6 @@ namespace Chess.Domain
 
 		private void RaiseCapture(int row, int col, ChessPiece boardItem)
 		{
-			Console.WriteLine("aaaa");
 			if (boardItem != null && boardItem.PieceColor == OpposingColor)
 			{
 				CaptureableLocation.Add(new Tuple<int, int>(row, col));
@@ -63,6 +62,11 @@ namespace Chess.Domain
 			{
 				AllPossibleMoveLocations.Add(new Tuple<int, int>(row, col));
 			}
+		}
+
+		public int NextPosition(int current, int magnitude, int direction)
+		{
+			return current + (magnitude * direction);
 		}
 	}
 }
