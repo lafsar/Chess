@@ -54,6 +54,7 @@ namespace Chess.Domain
 
 		private void RaiseCapture(int row, int col, ChessPiece boardItem)
 		{
+			Console.WriteLine("aaaa");
 			if (boardItem != null && boardItem.PieceColor == OpposingColor)
 			{
 				CaptureableLocation.Add(new Tuple<int, int>(row, col));

@@ -59,7 +59,7 @@ namespace Chess.Domain
 
 		private IEnumerable<Tuple<int, int>> DiagDirections(int rowDir, int colDir)
 		{
-			for (int i = 1, j = 1, nextRow = CurrentRow + (i * rowDir), nextCol = CurrentRow + (j * colDir);
+			for (int i = 1, j = 1, nextRow = CurrentRow + (i * rowDir), nextCol = CurrentColumn + (j * colDir);
 					ChessBoard.IsLegalBoardPosition(nextRow, nextCol) && !IsLocationBlocked(nextRow, nextCol);
 					i++, j++)
 			{

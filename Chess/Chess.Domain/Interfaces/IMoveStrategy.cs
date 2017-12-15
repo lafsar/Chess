@@ -14,7 +14,15 @@ namespace Chess.Domain
 		/// Iterable collection of possible moves (row, col) relative from the current piece position
 		/// </returns>
 		IEnumerable<Tuple<int, int>> GetMoveSet(int row, int col, PieceColor opposingPlayer);
+		/// <summary>
+		/// Locations that can score a capture
+		/// </summary>
+		/// <returns></returns>
 		List<Tuple<int, int>> GetCapturable();
+		/// <summary>
+		/// These are all possible moves that are not blocked by an allied unit
+		/// </summary>
+		/// <returns></returns>
 		List<Tuple<int, int>> GetAllMoves();
 	}
 }

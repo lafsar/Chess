@@ -126,7 +126,7 @@ namespace Chess.Domain
 		{
 			Board[row, column] = piece;
 			piece.SetPosition(row, column);
-			UpdateBoardState();
+			//UpdateBoardState();
 		}
 
 		public void RemovePiece(int row, int column)
@@ -195,14 +195,14 @@ namespace Chess.Domain
 				? GetPiece(0, 4)
 				: GetPiece(ChessConstants.MAX_BOARD_ROWS - 1, 4);
 
-			var isKing = requiredKing != null && requiredKing.GetType() == typeof(King) && requiredKing.MoveCount == 0 && !(requiredKing as King).IsInCheck;
+			var isKing = requiredKing != null && requiredKing.GetType().ToString() == "King" && requiredKing.MoveCount == 0 && !(requiredKing as King).IsInCheck;
 			var directionColumn = direction == 1
 				? ChessConstants.MAX_BOARD_COLUMNS - 1
 				: 0;
 			var requiredRook = color == PieceColor.Black
 				? GetPiece(0, directionColumn)
 				: GetPiece(ChessConstants.MAX_BOARD_ROWS - 1, directionColumn);
-			var isRook = requiredRook != null && requiredRook.GetType() == typeof(Rook) && requiredRook.MoveCount == 0;
+			var isRook = requiredRook != null && requiredRook.GetType().ToString() == "Rook" && requiredRook.MoveCount == 0;
 			//var hasNoBlocks = dire
 			return false;
 		}
