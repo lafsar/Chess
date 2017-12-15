@@ -26,9 +26,11 @@ namespace Chess.Domain
 		public List<Tuple<int, int>> WhiteCapturableLocations { get; private set; }
 		public List<Tuple<int, int>> WhiteMoveLocations { get; private set; }
 
+		public List<ChessPiece> BlackPiecesOnBoard { get; set; }
+		public List<ChessPiece> WhitePiecesOnBoard { get; set; }
 
 		public King BlackKing { get; private set; }
-		public King WhiteKing{ get; private set; }
+		public King WhiteKing { get; private set; }
 
 		public void UpdateBoardState()
 		{
@@ -36,6 +38,8 @@ namespace Chess.Domain
 			BlackMoveLocations = new List<Tuple<int, int>>();
 			WhiteCapturableLocations = new List<Tuple<int, int>>();
 			WhiteMoveLocations = new List<Tuple<int, int>>();
+			BlackPiecesOnBoard = new List<ChessPiece>();
+			WhitePiecesOnBoard = new List<ChessPiece>();
 			for (var i = 0; i < Board.GetLength(0); i++)
 			{
 				for (var j = 0; j < Board.GetLength(1); j++)
@@ -43,10 +47,6 @@ namespace Chess.Domain
 					var piece = GetPiece(i, j);
 					if (piece != null)
 					{
-						var opposingColor = piece.PieceColor == PieceColor.Black
-							? PieceColor.White
-							: PieceColor.Black;
-
 						var row = piece.Row;
 
 						var col = piece.Column;
@@ -96,6 +96,28 @@ namespace Chess.Domain
 			}
 		}
 
+		public bool CanDefendKing(PieceColor color)
+		{
+			if (BlackPiecesOnBoard != null && WhitePiecesOnBoard != null) {
+				var piecesOnBoard = color == PieceColor.Black
+					? BlackPiecesOnBoard
+					: WhitePiecesOnBoard;
+				var king = color == PieceColor.Black
+					? BlackKing
+					: WhiteKing;
+
+				var canDefend = piecesOnBoard.Exists(p =>
+				{
+					return p.MoveStrategy.GetMoveSet(p.Row, p.Column, p.OpposingColor).ToList().Exists(m =>
+					{
+						return !IsCheckedState(p, m);
+					});
+				});
+				return canDefend;
+			}
+			return true;
+		}
+
 		public bool IsCheckedState(ChessPiece piece, Tuple<int,int> destination)
 		{
 			var willBeChecked = false;
@@ -128,14 +150,17 @@ namespace Chess.Domain
 			if (piece.PieceColor == PieceColor.White)
 			{
 				var opposingColor = PieceColor.Black;
+
 				WhiteMoveLocations.AddRange(piece.MoveStrategy.GetMoveSet(row, col, opposingColor).ToList());
 				WhiteCapturableLocations.AddRange(piece.MoveStrategy.GetCapturable());
+				WhitePiecesOnBoard.Add(piece);
 			}
 			else
 			{
 				var opposingColor = PieceColor.White;
-				WhiteMoveLocations.AddRange(piece.MoveStrategy.GetMoveSet(row, col, opposingColor).ToList());
-				WhiteCapturableLocations.AddRange(piece.MoveStrategy.GetCapturable());
+				BlackMoveLocations.AddRange(piece.MoveStrategy.GetMoveSet(row, col, opposingColor).ToList());
+				BlackCapturableLocations.AddRange(piece.MoveStrategy.GetCapturable());
+				BlackPiecesOnBoard.Add(piece);
 			}
 		}
 

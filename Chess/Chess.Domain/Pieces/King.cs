@@ -26,28 +26,9 @@ namespace Chess.Domain
 		//TODO: What determines a stalemate vs checkmate?
 		public bool IsCheckMated()
 		{
-			return IsInCheck && !(MoveStrategy as KingMoveStrategy).GetMoveSet(Row, Column, OpposingColor).Any() && !CanDefendTheKing();
+			return IsInCheck && !ChessBoard.CanDefendKing(PieceColor);
 		}
-		/// <summary>
-		/// Checks all possible moves for the current player to see if the subject can defend their king
-		/// </summary>
-		/// <returns></returns>
-		private bool CanDefendTheKing()
-		{
-			//var locations = PieceColor == PieceColor.Black
-			//	? ChessBoard.BlackMoveLocations
-			//	: ChessBoard.WhiteMoveLocations;
 
-			//return locations.Exists(l =>
-			//{
-			//	ChessBoard.UpdateBoardState();
-			//	var king = PieceColor == PieceColor.Black
-			//		? ChessBoard.BlackKing
-			//		: ChessBoard.WhiteKing;
-			//	return !king.IsInCheck;
-			//});
-			return true;
-		}
 		public override void Accept(IChessPieceVisitor visitor) { visitor.Visit(this); }
 	}
 }

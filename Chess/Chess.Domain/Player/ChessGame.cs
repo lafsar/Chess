@@ -10,14 +10,43 @@ namespace Chess.Domain
 		public FirstPlayer Player1 { get; set; }
 		public SecondPlayer Player2 { get; set; }
 		public ChessBoard ChessBoard { get; set; }
-		//TODO: Chessgame declares draw if turncount = 50 and report the highest score
 		public int TurnCount { get; set; }
 		private bool _isGameStarted { get; set; }
+		public PieceColor Winner = PieceColor.None;
+		public bool IsDraw = false;
 		public void GiveNextTurn(Player NextPlayer)
 		{
+			
+			TurnCount++;
 			Player2.IsCurrentTurn = NextPlayer == Player1;
 			Player1.IsCurrentTurn = NextPlayer == Player2;
-			TurnCount++;
+			if (TurnCount >= 4)
+			{
+
+				Verify_CheckMate();
+				Verify_Draw();
+			}
+		}
+
+		public void Verify_CheckMate()
+		{
+			Winner = ChessBoard.BlackKing.IsCheckMated()
+				? PieceColor.White
+				: ChessBoard.WhiteKing.IsCheckMated()
+				? PieceColor.Black
+				: PieceColor.None;
+			if (Winner != PieceColor.None)
+			{
+				Player2.IsCurrentTurn = Player1.IsCurrentTurn = false;
+			}
+		}
+		public void Verify_Draw()
+		{
+			if (TurnCount >= 50)
+			{
+				Player2.IsCurrentTurn = Player1.IsCurrentTurn = false;
+				IsDraw = true;
+			}
 		}
 
 		public void StartGame(ChessBoard board, FirstPlayer player1, SecondPlayer player2)

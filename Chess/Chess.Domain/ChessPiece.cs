@@ -39,9 +39,11 @@ namespace Chess.Domain
 		{
 			var destination = new Tuple<int, int>(row, column);
 			var origin = new Tuple<int, int>(Row, Column);
+			var moveSet = MoveStrategy.GetMoveSet(Row, Column, OpposingColor);
 			var canMove = !destination.Equals(origin) 
-				&& MoveStrategy.GetMoveSet(Row, Column, OpposingColor).Any(t => t.Equals(destination))
+				&& moveSet.Any(t => t.Equals(destination))
 				&& !ChessBoard.IsCheckedState(this, destination);
+			
 			if (canMove)
 			{
 				BeforeMove(destination);

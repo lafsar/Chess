@@ -28,7 +28,6 @@ namespace Chess.Domain
 
 		public virtual List<Tuple<int,int>> GetCapturable()
 		{
-			//Console.WriteLine("allmoves");
 			return CaptureableLocation;
 		}
 
@@ -48,7 +47,6 @@ namespace Chess.Domain
 
 		private void RaiseCapture(int row, int col, ChessPiece boardItem)
 		{
-			//Console.WriteLine("raisecapture" + this.GetType().ToString());
 			if (boardItem != null && boardItem.PieceColor == OpposingColor)
 			{
 				CaptureableLocation.Add(new Tuple<int, int>(row, col));

@@ -14,7 +14,7 @@ namespace Chess.Domain
 		public override IEnumerable<Tuple<int, int>> GetMoveSet(int row, int col, PieceColor opposingPlayer)
 		{
 			base.GetMoveSet(row, col, opposingPlayer);
-			var allMoves = AllKingMoves.Where(m => CanMove(m));
+			var allMoves = AllKingMoves.Where(m => CanMove(m)).ToList();
 			return allMoves;
 		}
 
