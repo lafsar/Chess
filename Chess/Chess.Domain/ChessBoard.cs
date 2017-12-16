@@ -245,9 +245,9 @@ namespace Chess.Domain
 			var currentRow = color == PieceColor.Black
 				? 0
 				: ChessConstants.MAX_BOARD_ROWS - 1;
-			var requiredKing = GetPiece(currentRow, 4);
+			var requiredKing = GetPiece(currentRow, 4) as King;
 
-			var hasKing = requiredKing as King != null && requiredKing.MoveCount == 0 && !(requiredKing as King).IsInCheck;
+			var hasKing = requiredKing != null && requiredKing.MoveCount == 0 && !requiredKing.IsInCheck;
 			var directionColumn = direction == 1
 				? ChessConstants.MAX_BOARD_COLUMNS - 1
 				: 0;
@@ -259,7 +259,12 @@ namespace Chess.Domain
 				? GetPiece(currentRow, 5) == null && GetPiece(currentRow, 6) == null
 				: GetPiece(currentRow, 1) == null && GetPiece(currentRow, 2) == null && GetPiece(currentRow, 3) == null;
 			var destination = new Tuple<int, int>(currentRow, directionColumn);
-			return hasKing && hasRook && hasNoBlocks && !IsCheckedState(requiredKing, destination);
+			var canCastle = hasKing && hasRook && hasNoBlocks && !IsCheckedState(requiredKing, destination);
+			if (canCastle) { 
+				Remove(currentRow, 4);
+				AddReplace(requiredKing, currentRow, directionColumn);
+			}
+			return canCastle;
 		}
 
 		private bool SwitchPiece(ChessPiece oldPiece, ChessPiece newPiece)
