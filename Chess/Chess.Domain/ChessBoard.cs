@@ -124,7 +124,7 @@ namespace Chess.Domain
 			//Check to see if next move will put us in check
 			if (BlackKing != null && WhiteKing != null)
 			{
-				var oldBoard = Board;
+				var oldBoard = Board.Clone() as ChessPiece[,];
 				var oldRow = piece.Row;
 				var oldCol = piece.Column;
 				piece.BeforeMove(destination);
@@ -138,9 +138,8 @@ namespace Chess.Domain
 					: WhiteKing.IsInCheck;
 				//Reset state back to what it was
 				ResetBoard(oldBoard);
-				piece.SetPosition(oldRow, oldCol);
+				piece.SetPosition(oldRow, oldCol);				
 				piece.MoveCount--;
-				UpdateBoardState();
 			}
 			return willBeChecked;
 		}

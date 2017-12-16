@@ -43,7 +43,6 @@ namespace Chess.Domain
 			var canMove = !destination.Equals(origin) 
 				&& moveSet.Any(t => t.Equals(destination))
 				&& !ChessBoard.IsCheckedState(this, destination);
-			
 			if (canMove)
 			{
 				BeforeMove(destination);
