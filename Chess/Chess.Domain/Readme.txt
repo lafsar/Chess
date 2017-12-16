@@ -1,7 +1,7 @@
 ﻿As you can see, I was a little bored on my vacation so I attempted to complete the majority of the core logic for a full chessgame with all the piece types.
 
 I fixed up/changed some of the pawn unit tests (Especially the ones that weren't following chess rules), added Queen and King unit tests, and moved the board unit tests to another file.
-For this app, I assumed that Black pieces start at the top (row 0-1) and White pieces are at the bottom of the board.
+For this app, I assumed that Black pieces start at the top (row 0-1) and White pieces are at the bottom of the board. That way, we can have legal pawn moves.
 As per chess rules, White is assumed to go first.
 
 I used a combination of design patterns which I will explain below.
