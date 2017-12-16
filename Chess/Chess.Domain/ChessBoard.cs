@@ -185,7 +185,6 @@ namespace Chess.Domain
 			if (IsLegalBoardPosition(row, column))
 			{
 				Board[row, column] = null;
-				//UpdateBoardState();
 			}
 		}
 
@@ -249,14 +248,14 @@ namespace Chess.Domain
 				: ChessConstants.MAX_BOARD_ROWS - 1;
 			var requiredKing = GetPiece(currentRow, 4);
 
-			var hasKing = requiredKing != null && requiredKing.GetType().ToString() == "King" && requiredKing.MoveCount == 0 && !(requiredKing as King).IsInCheck;
+			var hasKing = requiredKing as King != null && requiredKing.MoveCount == 0 && !(requiredKing as King).IsInCheck;
 			var directionColumn = direction == 1
 				? ChessConstants.MAX_BOARD_COLUMNS - 1
 				: 0;
 			var requiredRook = color == PieceColor.Black
 				? GetPiece(0, directionColumn)
 				: GetPiece(ChessConstants.MAX_BOARD_ROWS - 1, directionColumn);
-			var hasRook = requiredRook != null && requiredRook.GetType().ToString() == "Rook" && requiredRook.MoveCount == 0;
+			var hasRook = requiredRook as Rook != null && requiredRook.MoveCount == 0;
 			var hasNoBlocks = direction == 1
 				? GetPiece(currentRow, 5) == null && GetPiece(currentRow, 6) == null
 				: GetPiece(currentRow, 1) == null && GetPiece(currentRow, 2) == null && GetPiece(currentRow, 3) == null;
