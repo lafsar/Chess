@@ -17,8 +17,8 @@ namespace Chess.Domain
 			var allMoves = AllKingMoves.Where(m => CanMove(m)).ToList();
 			return allMoves;
 		}
-		//Filter moves down to ones where an opposing piece can move to.
-		//So we dont have to check the state of the board on the next move and then reset it.
+		//Filter moves down to ones where an opposing piece couldnt move to.
+		//So we dont have to check the state of the board on the next move and then reset it unless the king tries to capture.
 		private bool CanMove(Tuple<int, int> movement)
 		{
 			var isLegal = ChessBoard.IsLegalBoardPosition(movement.Item1, movement.Item2) && !IsLocationBlocked(movement);

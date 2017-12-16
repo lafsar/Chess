@@ -43,5 +43,13 @@ namespace Chess.Domain
 				AfterMove();
 			}
 		}
+
+		public void CastleKing(int direction)
+		{
+			if (_mediator.IsGameStarted() && ChessBoard.CastleKing(PieceColor, direction))
+			{
+				AfterMove();
+			}
+		}
 	}
 }

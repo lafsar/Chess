@@ -252,9 +252,9 @@ namespace Chess.Domain
 				? ChessConstants.MAX_BOARD_COLUMNS - 1
 				: 0;
 			var requiredRook = color == PieceColor.Black
-				? GetPiece(0, directionColumn)
-				: GetPiece(ChessConstants.MAX_BOARD_ROWS - 1, directionColumn);
-			var hasRook = requiredRook as Rook != null && requiredRook.MoveCount == 0;
+				? GetPiece(0, directionColumn) as Rook
+				: GetPiece(ChessConstants.MAX_BOARD_ROWS - 1, directionColumn) as Rook;
+			var hasRook = requiredRook != null && requiredRook.MoveCount == 0;
 			var hasNoBlocks = direction == 1
 				? GetPiece(currentRow, 5) == null && GetPiece(currentRow, 6) == null
 				: GetPiece(currentRow, 1) == null && GetPiece(currentRow, 2) == null && GetPiece(currentRow, 3) == null;
