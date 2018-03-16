@@ -1,5 +1,4 @@
-﻿As you can see, I was a little bored on my vacation so I attempted to complete the majority of the core logic for a full chessgame with all the piece types.
-
+﻿
 I fixed up/changed some of the pawn unit tests (Especially the ones that weren't following chess rules), added Queen and King unit tests, and moved the board unit tests to another file.
 For this app, I assumed that Black pieces start at the top (row 0-1) and White pieces are at the bottom of the board. That way, we can have legal pawn moves.
 As per chess rules, White is assumed to go first.
@@ -10,7 +9,7 @@ I wanted to decouple the actual chesspiece objects from their moveset calculatio
 The reason for this is we don't want to instantiate new chess piece objects everytime we need to calculate where their possible move locations could be.
 This is important for determining whether the next move will put the current player's king in check - we just need to mock the next move and reset the board back to the original state before performing the actual move.
 
-Each core move strategy is based on a direction since half of the chesspieces in the game can move multiple tiles in a single direction, I figured I get maximum re-use out of that.
+Each core move strategy is based on a direction since half of the chesspieces in the game can move multiple tiles in a single direction, I figured I get maximum re-use out of that. This is sort of a decorator pattern since the Knight, Queen and King are dynamically adding functionality to the abstract BaseMoveStrategy.
 
 Since the pawn has such unique moves, I used an adapter pattern to explicitly define what the pawn move strategy does differently from other move strategies.
 
@@ -27,3 +26,5 @@ Initially, I was thinking of going with a singleton pattern for the chessboard, 
 
 I would have opted for using HashSets for storing the tuples since we have no need for duplicates and ordering, but it is a pain to cast from IEnumerable to HashSet.
 IEnumerables were used so I could take advantage of concise control flow and more condensed code via yield returns and lazy evaluation when it's needed.
+
+-Luke Afsar
